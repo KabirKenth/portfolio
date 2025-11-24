@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Kabir Kenth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a1f36;
+            --secondary: #c17817;
+            --tertiary: #8fbc8f;
+            --neutral: #faf9f6;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, #2a2f4a 100%);
+            color: var(--neutral);
+            overflow-x: hidden;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.6s ease;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, var(--secondary), var(--tertiary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .filter-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background: var(--secondary);
+            color: black;
+        }
+        
+        .project-card {
+            opacity: 1;
+            transform: scale(1);
+            transition: all 0.5s ease;
+        }
+        
+        .project-card.hidden {
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: #1f2937;
+            border-radius: 12px;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-black bg-opacity-20 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold gradient-text">Kabir Kenth</div>
+                <div class="flex space-x-8">
+                    <a href="index.html" class="nav-link text-white hover:text-yellow-400">Home</a>
+                    <a href="portfolio.html" class="nav-link text-yellow-400">Portfolio</a>
+                    <a href="experience.html" class="nav-link text-white hover:text-yellow-400">Experience</a>
+                    <a href="index.html#contact" class="nav-link text-white hover:text-yellow-400">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <section class="pt-32 pb-16 bg-gradient-to-b from-gray-900 to-black">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 gradient-text reveal">My Portfolio</h1>
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto reveal">
+                Explore my journey through full-stack development, data engineering, and innovative solutions
+            </p>
+        </div>
+    </section>
+
+    <!-- Filter Buttons -->
+    <section class="py-8 bg-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-wrap justify-center gap-4 reveal">
+                <button class="filter-btn active bg-gray-800 text-white px-6 py-3 rounded-lg font-semibold" data-filter="all">
+                    All Projects
+                </button>
+                <button class="filter-btn bg-gray-800 text-white px-6 py-3 rounded-lg font-semibold" data-filter="fullstack">
+                    Full-Stack
+                </button>
+                <button class="filter-btn bg-gray-800 text-white px-6 py-3 rounded-lg font-semibold" data-filter="data">
+                    Data Engineering
+                </button>
+                <button class="filter-btn bg-gray-800 text-white px-6 py-3 rounded-lg font-semibold" data-filter="mobile">
+                    Mobile/Web Apps
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Grid -->
+    <section class="py-20 bg-gradient-to-b from-black to-gray-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-12">
+                
+                <!-- FreightSwipe Project -->
+                <div id="freightswipe" class="project-card card-hover bg-gray-800 rounded-xl overflow-hidden reveal" data-category="fullstack" data-project="freightswipe">
+                    <img src="resources/project-freightswipe.jpg" alt="FreightSwipe" class="w-full h-64 object-cover">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-4 text-yellow-400">FreightSwipe</h3>
+                        <p class="text-gray-300 mb-6">
+                            A comprehensive freight matching platform that revolutionizes logistics by connecting shippers and carriers through an intuitive swipe-based interface. Features real-time matching, load dashboards, and two-way review systems.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">React</span>
+                            <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm">Node.js</span>
+                            <span class="bg-blue-800 text-white px-3 py-1 rounded-full text-sm">PostgreSQL</span>
+                            <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm">Prisma</span>
+                            <span class="bg-blue-400 text-white px-3 py-1 rounded-full text-sm">JWT</span>
+                            <span class="bg-blue-700 text-white px-3 py-1 rounded-full text-sm">Docker</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <button class="bg-yellow-400 text-black px-6 py-2 rounded-lg font-semibold hover:bg-yellow-300 transition-colors" onclick="openModal('freightswipe-modal')">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Walmart Scraper Project -->
+                <div id="scraper" class="project-card card-hover bg-gray-800 rounded-xl overflow-hidden reveal" data-category="data" data-project="scraper">
+                    <img src="resources/project-scraper.jpg" alt="Walmart Scraper" class="w-full h-64 object-cover">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-4 text-yellow-400">Walmart Data Scraper</h3>
+                        <p class="text-gray-300 mb-6">
+                            Advanced web scraping system for automated product data collection from Walmart. Features intelligent retry logic, rate limiting, and scalable database architecture with PostgreSQL migration strategy.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-yellow-600 text-white px-3 py-1 rounded-full text-sm">Python</span>
+                            <span class="bg-blue-800 text-white px-3 py-1 rounded-full text-sm">BeautifulSoup</span>
+                            <span class="bg-blue-700 text-white px-3 py-1 rounded-full text-sm">SQLite</span>
+                            <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">PostgreSQL</span>
+                            <span class="bg-blue-700 text-white px-3 py-1 rounded-full text-sm">Docker</span>
+                            <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm">Requests</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <button class="bg-yellow-400 text-black px-6 py-2 rounded-lg font-semibold hover:bg-yellow-300 transition-colors" onclick="openModal('scraper-modal')">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teamfill Project -->
+                <div id="teamfill" class="project-card card-hover bg-gray-800 rounded-xl overflow-hidden reveal" data-category="mobile" data-project="teamfill">
+                    <img src="resources/project-teamfill.jpg" alt="Teamfill" class="w-full h-64 object-cover">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-4 text-yellow-400">Teamfill</h3>
+                        <p class="text-gray-300 mb-6">
+                            Capstone project connecting athletes with pickup sports teams through a React and Firebase application. Implemented Agile methodology with comprehensive documentation and user authentication.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">React</span>
+                            <span class="bg-orange-600 text-white px-3 py-1 rounded-full text-sm">Firebase</span>
+                            <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm">JavaScript</span>
+                            <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm">Agile</span>
+                            <span class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm">Git</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <button class="bg-yellow-400 text-black px-6 py-2 rounded-lg font-semibold hover:bg-yellow-300 transition-colors" onclick="openModal('teamfill-modal')">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bulk Buys Project -->
+                <div id="bulkbuys" class="project-card card-hover bg-gray-800 rounded-xl overflow-hidden reveal" data-category="fullstack" data-project="bulkbuys">
+                    <img src="resources/project-bulkbuys.jpg" alt="Bulk Buys" class="w-full h-64 object-cover">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-4 text-yellow-400">Bulk Buys E-commerce</h3>
+                        <p class="text-gray-300 mb-6">
+                            Software engineering internship project featuring Python-based services in Docker containers. Automated Amazon repricing tools integration with Zoho One, saving the company $6K+ annually.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-yellow-600 text-white px-3 py-1 rounded-full text-sm">Python</span>
+                            <span class="bg-blue-700 text-white px-3 py-1 rounded-full text-sm">Docker</span>
+                            <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm">Zoho One</span>
+                            <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm">REST APIs</span>
+                            <span class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm">Agile</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <button class="bg-yellow-400 text-black px-6 py-2 rounded-lg font-semibold hover:bg-yellow-300 transition-colors" onclick="openModal('bulkbuys-modal')">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Modals -->
+    <!-- FreightSwipe Modal -->
+    <div id="freightswipe-modal" class="modal">
+        <div class="modal-content">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 class="text-3xl font-bold text-yellow-400">FreightSwipe</h2>
+                    <button onclick="closeModal('freightswipe-modal')" class="text-gray-400 hover:text-white text-2xl">×</button>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3">Project Overview</h3>
+                    <p class="text-gray-300 mb-4">
+                        FreightSwipe is a comprehensive logistics platform that modernizes freight matching through intuitive swipe-based interactions. The application connects shippers with available carriers in real-time, featuring advanced matching algorithms and comprehensive review systems.
+                    </p>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3">Key Features</h3>
+                    <ul class="text-gray-300 space-y-2">
+                        <li>• Swipe-based load matching interface for intuitive user experience</li>
+                        <li>• Real-time dashboard with live load updates and carrier availability</li>
+                        <li>• JWT-based authentication ensuring secure user sessions</li>
+                        <li>• Two-way review system building trust between shippers and carriers</li>
+                        <li>• RESTful API architecture for scalable service integration</li>
+                        <li>• Docker containerization for consistent deployment across environments</li>
+                    </ul>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3">Technical Implementation</h3>
+                    <p class="text-gray-300 mb-4">
+                        Built with React for the frontend user interface, Node.js and Express for the backend API, and PostgreSQL with Prisma ORM for efficient data management. The application implements secure JWT authentication and is fully containerized using Docker and Docker Compose for seamless deployment.
+                    </p>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3">Impact & Results</h3>
+                    <p class="text-gray-300">
+                        This project demonstrates full-stack development expertise, combining modern web technologies with practical logistics solutions. The swipe-based interface improves user engagement while the real-time matching system enhances operational efficiency for freight management.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scraper Modal -->
+    <div id="scraper-modal" class="modal">
+        <div class="modal-content">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 class="text-3xl font-bold text-yellow-400">Walmart Data Scraper</h2>
+                    <button onclick="closeModal('scraper-modal')" class="text-gray-400 hover:text-white text-2xl">×</button>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3">Project Overview</h3>
+                    <p class="text-gray-300 mb-4">
+                        An advanced web scraping system designed for automated collection of product data from Walmart's e-commerce platform. The system handles large-scale data extraction with intelligent error handling and scalable database architecture.
+                    </p>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3">Technical Features</h3>
+                    <ul class="text-gray-300 space-y-2">
+                        <li>• BeautifulSoup and Requests for efficient web scraping</li>
+                        <li>• Intelligent retry logic with exponential backoff</li>
+                        <li>• Rate limiting to prevent IP blocking and ensure respectful scraping</li>
+                        <li>• SQLite database with optimized indexing for fast queries</li>
+                        <li>• PostgreSQL migration strategy for production scaling</li>
+                        <li>• Docker Compose configuration for modular deployment</li>
+                    </ul>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3">Data Collection</h3>
+                    <p class="text-gray-300 mb-4">
+                        The scraper collects comprehensive product information including product names, pricing data, customer ratings, availability status, and product descriptions. All data is structured and stored with proper normalization for analytical purposes.
+                    </p>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3">Architecture & Reliability</h3>
+                    <p class="text-gray-300">
+                        Built with reliability and scalability in mind, the system implements comprehensive error handling, automatic retry mechanisms, and database optimization strategies. The containerized deployment ensures consistent performance across different environments.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teamfill Modal -->
+    <div id="teamfill-modal" class="modal">
+        <div class="modal-content">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 class="text-3xl font-bold text-yellow-400">Teamfill</h2>
+                    <button onclick="closeModal('teamfill-modal')" class="text-gray-400 hover:text-white text-2xl">×</button>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3">Project Overview</h3>
+                    <p class="text-gray-300 mb-4">
+                        A comprehensive sports team matching application designed as a capstone project to connect athletes with pickup sports teams. The platform facilitates seamless team formation and sports event coordination.
+                    </p>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3">Development Approach</h3>
+                    <ul class="text-gray-300 space-y-2">
+                        <li>• ReactJS frontend with responsive design for mobile compatibility</li>
+                        <li>• Firebase backend services for real-time data synchronization</li>
+                        <li>• Agile methodology implementation with structured Scrum meetings</li>
+                        <li>• Git version control for collaborative development</li>
+                        <li>• Comprehensive technical documentation covering design and validation</li>
+                        <li>• User authentication and profile management systems</li>
+                    </ul>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3">Key Features</h3>
+                    <p class="text-gray-300 mb-4">
+                        The application includes athlete profile creation, team discovery based on skill level and location, event scheduling, and real-time communication features. The platform supports multiple sports and provides analytics on team performance.
+                    </p>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3">Project Impact</h3>
+                    <p class="text-gray-300">
+                        Successfully demonstrated full-stack development capabilities, project management skills, and the ability to deliver a production-ready application within academic constraints while following industry best practices.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Buys Modal -->
+    <div id="bulkbuys-modal" class="modal">
+        <div class="modal-content">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 class="text-3xl font-bold text-yellow-400">Bulk Buys E-commerce Platform</h2>
+                    <button onclick="closeModal('bulkbuys-modal')" class="text-gray-400 hover:text-white text-2xl">×</button>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3">Project Overview</h3>
+                    <p class="text-gray-300 mb-4">
+                        Professional software engineering internship project focused on developing and deploying Python-based services for an e-commerce platform. The project involved automation of business processes and integration with third-party tools.
+                    </p>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3">Key Achievements</h3>
+                    <ul class="text-gray-300 space-y-2">
+                        <li>• Designed and deployed Python services in Docker containers</li>
+                        <li>• Automated Amazon repricing tools integration with Zoho One</li>
+                        <li>• Generated $6K+ annual cost savings through automation</li>
+                        <li>• Improved scalability and reduced setup time significantly</li>
+                        <li>• Collaborated with management on e-commerce platform features</li>
+                        <li>• Contributed to Agile ceremonies and technical documentation</li>
+                    </ul>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3">Technical Implementation</h3>
+                    <p class="text-gray-300 mb-4">
+                        Developed containerized Python applications with REST API integrations, automated data processing workflows, and comprehensive error handling. The solution integrated seamlessly with existing business systems while improving operational efficiency.
+                    </p>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3">Business Impact</h3>
+                    <p class="text-gray-300">
+                        Delivered measurable business value through automation, reducing manual processing time and operational costs while maintaining high reliability and scalability standards in a production environment.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black py-8">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <p class="text-gray-400">© 2025 Kabir Kenth. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
