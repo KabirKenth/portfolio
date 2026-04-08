@@ -167,7 +167,32 @@
     <section class="py-20 bg-gradient-to-b from-black to-gray-900">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid lg:grid-cols-2 gap-12">
-                
+                <!--Stock Analysis Project -->
+
+                <div id="stockanalysis" class="project-card card-hover bg-gray-800 rounded-xl overflow-hidden reveal" data-category="data" data-project="stockanalysis">
+                    <img src="resources/project-stock.jpg" alt="Stock Analysis Pipeline" class="w-full h-64 object-cover">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-4 text-yellow-400">AI-Powered Stock Analysis Pipeline</h3>
+                        <p class="text-gray-300 mb-6">
+                            Orchestrated containerized ELT pipeline using Apache Airflow and Docker to ingest real-time market data and financial news for S&P 500 equities daily. Architected a serverless data warehouse on Google BigQuery and integrated Google Gemini (GenAI) for predictive modeling.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-yellow-600 text-white px-3 py-1 rounded-full text-sm">Python</span>
+                            <span class="bg-blue-800 text-white px-3 py-1 rounded-full text-sm">BigQuery</span>
+                            <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm">Gemini AI</span>
+                            <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">Apache Airflow</span>
+                            <span class="bg-blue-700 text-white px-3 py-1 rounded-full text-sm">Docker</span>
+                            <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm">Looker Studio</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <button class="bg-yellow-400 text-black px-6 py-2 rounded-lg font-semibold hover:bg-yellow-300 transition-colors" onclick="openModal('stockanalysis-modal')">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
                 <!-- FreightSwipe Project -->
                 <div id="freightswipe" class="project-card card-hover bg-gray-800 rounded-xl overflow-hidden reveal" data-category="fullstack" data-project="freightswipe">
                     <img src="resources/project-freightswipe.jpg" alt="FreightSwipe" class="w-full h-64 object-cover">
@@ -267,6 +292,30 @@
     </section>
 
     <!-- Project Modals -->
+
+    <!--Stock Analysis Modal -->
+
+    <div id="stockanalysis-modal" class="modal">
+        <div class="modal-content">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 class="text-3xl font-bold text-yellow-400">AI-Powered Stock Analysis Pipeline</h2>
+                    <button onclick="closeModal('stockanalysis-modal')" class="text-gray-400 hover:text-white text-2xl">×</button>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3">Technical Implementation</h3>
+                    <ul class="text-gray-300 space-y-2">
+                        <li>• Orchestrated containerized ELT pipeline using Apache Airflow and Docker to ingest real-time market data and financial news for S&P 500 equities daily</li>
+                        <li>• Architected serverless data warehouse on Google BigQuery, implementing idempotent loading strategies to ensure zero-duplicate data integrity</li>
+                        <li>• Integrated Google Gemini (GenAI) to process unstructured news text, engineering quantifiable sentiment scores to train a Random Forest predictive model</li>
+                        <li>• Developed an automated Looker Studio dashboard to visualize model performance and buy/sell signals, creating a closed-loop decision support system</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- FreightSwipe Modal -->
     <div id="freightswipe-modal" class="modal">
         <div class="modal-content">
