@@ -3,410 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kabir Kenth - Software Engineer</title>
-    
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-    <link href="https://unpkg.com/splitting@1.0.6/dist/splitting.css" rel="stylesheet">
-    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #1a1f36;
-            --secondary: #c17817;
-            --tertiary: #8fbc8f;
-            --neutral: #faf9f6;
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--primary) 0%, #2a2f4a 100%);
-            color: var(--neutral);
-            overflow-x: hidden;
-        }
-        
-        .hero-bg {
-            background: url('resources/hero-bg.jpg') center/cover no-repeat;
-            position: relative;
-        }
-        
-        .hero-bg::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(26, 31, 54, 0.8) 0%, rgba(42, 47, 74, 0.6) 100%);
-        }
-        
-        .glow {
-            box-shadow: 0 0 20px rgba(193, 120, 23, 0.3);
-        }
-        
-        .glow:hover {
-            box-shadow: 0 0 30px rgba(193, 120, 23, 0.5);
-        }
-        
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        
-        .card-hover:hover {
-            transform: translateY(-10px) rotateX(5deg);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-        
-        .skill-item {
-            transition: all 0.3s ease;
-        }
-        
-        .skill-item:hover {
-            transform: scale(1.05);
-            color: var(--secondary);
-        }
-        
-        .nav-link {
-            position: relative;
-            transition: color 0.3s ease;
-        }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--secondary);
-            transition: width 0.3s ease;
-        }
-        
-        .nav-link:hover::after {
-            width: 100%;
-        }
-        
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-            transition: all 0.6s ease;
-        }
-        
-        .floating {
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        .gradient-text {
-            background: linear-gradient(45deg, var(--secondary), var(--tertiary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .tech-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 1rem;
-        }
-        
-        .tech-item {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 1rem;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-        
-        .tech-item:hover {
-            background: rgba(193, 120, 23, 0.2);
-            transform: translateY(-5px);
-        }
-    </style>
+    <title>Kabir Kenth — Software Engineer</title>
+    <meta name="description" content="Kabir Kenth — software engineering graduate working across full-stack development and data engineering. GCP, BigQuery, Airflow, and LLMs in production pipelines.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 bg-black bg-opacity-20 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-6 py-4">
-            <div class="flex justify-between items-center">
-                <div class="text-2xl font-bold gradient-text">Kabir Kenth</div>
-                <div class="flex space-x-8">
-                    <a href="#home" class="nav-link text-white hover:text-yellow-400">Home</a>
-                    <a href="portfolio.html" class="nav-link text-white hover:text-yellow-400">Portfolio</a>
-                    <a href="experience.html" class="nav-link text-white hover:text-yellow-400">Experience</a>
-                    <a href="#contact" class="nav-link text-white hover:text-yellow-400">Contact</a>
-                </div>
+
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-mark">kabirkenth<span class="tld">.me</span></a>
+            <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">menu</button>
+            <div class="nav-links">
+                <a href="index.html" aria-current="page">Home</a>
+                <a href="portfolio.html">Projects</a>
+                <a href="experience.html">Experience</a>
+                <a href="experience.html#contact">Contact</a>
+                <a href="Kabir-Kenth-Resume.pdf" class="btn" download>Résumé ↓</a>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero-bg min-h-screen flex items-center justify-center relative">
-        <div class="container mx-auto px-6 text-center relative z-10">
-            <div class="max-w-4xl mx-auto">
-                <div class="mb-8">
-                    <img src="resources/profile-avatar.jpg" alt="Kabir Kenth" class="w-32 h-32 rounded-full mx-auto mb-6 floating border-4 border-yellow-400">
+    <!-- Hero -->
+    <header class="hero">
+        <div class="wrap">
+            <p class="eyebrow reveal">Kabir Kenth — Software Engineer · Hamilton, ON</p>
+            <h1 class="reveal">Software that ships with a <em>human in the loop</em>.</h1>
+            <p class="hero-sub reveal">
+                Software Engineering graduate from McMaster University working across
+                <strong>full-stack development</strong> and <strong>data engineering</strong> —
+                building on GCP and BigQuery, containerizing with Docker, automating ETL with Airflow,
+                and lately getting LLMs into production pipelines with a person reviewing the output
+                before anything goes out.
+            </p>
+            <div class="hero-actions reveal">
+                <a href="portfolio.html" class="btn btn-solid">View projects</a>
+                <a href="experience.html#contact" class="btn">Get in touch</a>
+            </div>
+
+            <!-- Signature: live pipeline run -->
+            <div class="pipeline reveal" aria-label="Animated diagram of the job application automator pipeline">
+                <div class="pipeline-head">
+                    <span class="live-dot" aria-hidden="true"></span>
+                    job-application-automator
+                    <span class="run-id">app.kabirkenth.me</span>
                 </div>
-                
-                <h1 class="text-6xl md:text-8xl font-bold mb-6">
-                    <span id="typed-name" class="gradient-text"></span>
-                </h1>
-                
-                <p class="text-xl md:text-2xl mb-8 text-gray-200 max-w-2xl mx-auto">
-                    Innovative Software Engineering Graduate specializing in 
-                    <span class="text-yellow-400 font-semibold">end-to-end web applications</span> 
-                    and <span class="text-yellow-400 font-semibold">scalable data solutions</span>
+                <ol class="pipeline-track" id="pipeline">
+                    <li class="stage">
+                        <span class="stage-status" aria-hidden="true"></span>
+                        <span class="stage-name">ingest</span>
+                        <span class="stage-desc">Adzuna job listings</span>
+                        <span class="stage-note">fetching…</span>
+                    </li>
+                    <li class="stage">
+                        <span class="stage-status" aria-hidden="true"></span>
+                        <span class="stage-name">score</span>
+                        <span class="stage-desc">Claude API vs. resume</span>
+                        <span class="stage-note">scoring…</span>
+                    </li>
+                    <li class="stage">
+                        <span class="stage-status" aria-hidden="true"></span>
+                        <span class="stage-name">generate</span>
+                        <span class="stage-desc">ATS-safe PDFs</span>
+                        <span class="stage-note">rendering…</span>
+                    </li>
+                    <li class="stage gate">
+                        <span class="stage-status" aria-hidden="true"></span>
+                        <span class="stage-name">human review</span>
+                        <span class="stage-desc">approve every document</span>
+                        <span class="stage-note">awaiting approval…</span>
+                    </li>
+                    <li class="stage">
+                        <span class="stage-status" aria-hidden="true"></span>
+                        <span class="stage-name">submit</span>
+                        <span class="stage-desc">Playwright worker</span>
+                        <span class="stage-note">applying…</span>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </header>
+
+    <!-- Selected work -->
+    <section class="section">
+        <div class="wrap">
+            <div class="section-head reveal">
+                <p class="eyebrow">Selected work</p>
+                <h2>Pipelines, platforms, and the glue between them</h2>
+            </div>
+            <div class="cards">
+                <article class="card reveal">
+                    <div class="card-meta">2026 <span class="status status-dev">In development</span></div>
+                    <h3>Job Application Automator</h3>
+                    <p>Pulls job listings from Adzuna, scores each against a parsed resume with the Claude API,
+                       and generates tailored ATS-safe resumes and cover letters as PDFs — with email approval
+                       before any document goes out.</p>
+                    <ul class="stack">
+                        <li>Next.js</li><li>TypeScript</li><li>Supabase</li><li>Claude API</li><li>Playwright</li>
+                    </ul>
+                    <a class="card-link" href="portfolio.html#automator">Case study</a>
+                </article>
+                <article class="card reveal">
+                    <div class="card-meta">2026 <span class="status status-live">Shipped</span></div>
+                    <h3>AI-Powered Stock Analysis Pipeline</h3>
+                    <p>Containerized ELT pipeline pulling daily market data and news for S&amp;P 500 stocks,
+                       with Gemini sentiment scoring feeding a Random Forest model and a Looker Studio dashboard.</p>
+                    <ul class="stack">
+                        <li>Python</li><li>BigQuery</li><li>Airflow</li><li>Gemini</li><li>Docker</li>
+                    </ul>
+                    <a class="card-link" href="portfolio.html#stock">Case study</a>
+                </article>
+                <article class="card reveal">
+                    <div class="card-meta">2025 <span class="status status-live">Shipped</span></div>
+                    <h3>FreightSwipe</h3>
+                    <p>Full-stack logistics platform with a swipe-deck interface for real-time load matching,
+                       separate carrier and shipper dashboards, and JWT-secured REST APIs.</p>
+                    <ul class="stack">
+                        <li>React</li><li>Node.js</li><li>PostgreSQL</li><li>Prisma</li><li>Docker</li>
+                    </ul>
+                    <a class="card-link" href="portfolio.html#freightswipe">Case study</a>
+                </article>
+            </div>
+            <div class="section-foot reveal">
+                <a href="portfolio.html" class="btn">All projects →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills -->
+    <section class="section">
+        <div class="wrap">
+            <div class="section-head reveal">
+                <p class="eyebrow">Capabilities</p>
+                <h2>Tools I reach for</h2>
+            </div>
+            <div class="skill-rows reveal">
+                <div class="skill-row">
+                    <h3>Languages</h3>
+                    <ul class="stack">
+                        <li>Python</li><li>JavaScript (ES6+)</li><li>TypeScript</li><li>SQL</li>
+                    </ul>
+                </div>
+                <div class="skill-row">
+                    <h3>Frameworks</h3>
+                    <ul class="stack">
+                        <li>React</li><li>Next.js</li><li>Node.js</li><li>Express.js</li><li>Prisma ORM</li>
+                    </ul>
+                </div>
+                <div class="skill-row">
+                    <h3>Cloud &amp; Data</h3>
+                    <ul class="stack">
+                        <li>Google Cloud Platform</li><li>BigQuery</li><li>Looker Studio</li><li>Firebase</li><li>Supabase</li><li>Apache Airflow</li>
+                    </ul>
+                </div>
+                <div class="skill-row">
+                    <h3>Tools</h3>
+                    <ul class="stack">
+                        <li>PostgreSQL</li><li>Docker</li><li>Git</li><li>Playwright</li><li>Trigger.dev</li>
+                    </ul>
+                </div>
+                <div class="skill-row">
+                    <h3>Practices</h3>
+                    <ul class="stack">
+                        <li>Agile (Scrum)</li><li>REST APIs</li><li>JWT Authentication</li><li>ETL Pipelines</li><li>CI/CD</li><li>Technical Documentation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section class="section">
+        <div class="wrap two-col">
+            <div class="about reveal">
+                <div class="section-head">
+                    <p class="eyebrow">About</p>
+                    <h2>Engineering with a review step</h2>
+                </div>
+                <p>
+                    I work at the seam between software engineering and data — the place where an app
+                    needs a pipeline behind it, or a pipeline needs a real interface in front of it.
                 </p>
-                
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="portfolio.html" class="bg-yellow-400 text-black px-8 py-4 rounded-lg font-semibold hover:bg-yellow-300 glow transition-all duration-300">
-                        View My Work
-                    </a>
-                    <a href="experience.html" class="border-2 border-yellow-400 text-yellow-400 px-8 py-4 rounded-lg font-semibold hover:bg-yellow-400 hover:text-black transition-all duration-300">
-                        Get In Touch
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Scroll Indicator -->
-        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <div class="w-6 h-10 border-2 border-white rounded-full flex justify-center">
-                <div class="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Skills Section -->
-    <section class="py-20 bg-gray-900">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-16 reveal">
-                <h2 class="text-4xl md:text-5xl font-bold mb-6 gradient-text">Technical Skills</h2>
-                <p class="text-xl text-gray-300 max-w-2xl mx-auto">
-                    Proficient in modern web technologies with expertise in full-stack development and data engineering
+                <p>
+                    Recently that has meant putting <strong>large language models into production
+                    workflows</strong>: LLMs draft, score, and summarize, but a person approves the
+                    output before it ships. I think that review gate is the difference between a
+                    demo and a system people trust.
+                </p>
+                <p>
+                    Based in Hamilton, ON. Open to full-time, contract, remote, and hybrid roles.
                 </p>
             </div>
-            
-            <div class="grid lg:grid-cols-2 gap-12 items-center">
-                <!-- Skills Radar Chart -->
-                <div class="reveal">
-                    <div id="skillsChart" class="w-full h-96"></div>
-                </div>
-                
-                <!-- Skills Grid -->
-                <div class="reveal">
-                    <div class="tech-grid">
-                        <div class="tech-item">
-                            <div class="text-3xl mb-2">🐍</div>
-                            <h4 class="font-semibold">Python</h4>
-                            <p class="text-sm text-gray-400">Data & Backend</p>
-                        </div>
-                        <div class="tech-item">
-                            <div class="text-3xl mb-2">⚛️</div>
-                            <h4 class="font-semibold">React</h4>
-                            <p class="text-sm text-gray-400">Frontend UI</p>
-                        </div>
-                        <div class="tech-item">
-                            <div class="text-3xl mb-2">🟢</div>
-                            <h4 class="font-semibold">Node.js</h4>
-                            <p class="text-sm text-gray-400">Backend API</p>
-                        </div>
-                        <div class="tech-item">
-                            <div class="text-3xl mb-2">🐳</div>
-                            <h4 class="font-semibold">Docker</h4>
-                            <p class="text-sm text-gray-400">Containerization</p>
-                        </div>
-                        <div class="tech-item">
-                            <div class="text-3xl mb-2">🐘</div>
-                            <h4 class="font-semibold">PostgreSQL</h4>
-                            <p class="text-sm text-gray-400">Database</p>
-                        </div>
-                        <div class="tech-item">
-                            <div class="text-3xl mb-2">☁️</div>
-                            <h4 class="font-semibold">Firebase</h4>
-                            <p class="text-sm text-gray-400">Cloud Services</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects Preview -->
-    <section class="py-20 bg-gradient-to-b from-gray-900 to-black">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-16 reveal">
-                <h2 class="text-4xl md:text-5xl font-bold mb-6 gradient-text">Featured Projects</h2>
-                <p class="text-xl text-gray-300 max-w-2xl mx-auto">
-                    Real-world applications showcasing full-stack development expertise
-                </p>
-            </div>
-            
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- FreightSwipe -->
-                <div class="card-hover bg-gray-800 rounded-xl overflow-hidden reveal">
-                    <img src="resources/project-freightswipe.jpg" alt="FreightSwipe" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-3 text-yellow-400">FreightSwipe</h3>
-                        <p class="text-gray-300 mb-4">
-                            Full-stack freight matching platform with real-time logistics, swipe-based UI, and containerized deployment.
-                        </p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">React</span>
-                            <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm">Node.js</span>
-                            <span class="bg-blue-800 text-white px-3 py-1 rounded-full text-sm">PostgreSQL</span>
-                        </div>
-                        <a href="portfolio.html#freightswipe" class="text-yellow-400 hover:text-yellow-300 font-semibold">
-                            View Details →
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Walmart Scraper -->
-                <div class="card-hover bg-gray-800 rounded-xl overflow-hidden reveal">
-                    <img src="resources/project-scraper.jpg" alt="Walmart Scraper" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-3 text-yellow-400">Walmart Data Scraper</h3>
-                        <p class="text-gray-300 mb-4">
-                            Automated web scraping system with database optimization and containerized deployment for scalable data collection.
-                        </p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="bg-yellow-600 text-white px-3 py-1 rounded-full text-sm">Python</span>
-                            <span class="bg-blue-800 text-white px-3 py-1 rounded-full text-sm">SQLite</span>
-                            <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">Docker</span>
-                        </div>
-                        <a href="portfolio.html#scraper" class="text-yellow-400 hover:text-yellow-300 font-semibold">
-                            View Details →
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Teamfill -->
-                <div class="card-hover bg-gray-800 rounded-xl overflow-hidden reveal">
-                    <img src="resources/project-teamfill.jpg" alt="Teamfill" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-3 text-yellow-400">Teamfill</h3>
-                        <p class="text-gray-300 mb-4">
-                            Sports team matching application connecting athletes with pickup games using Firebase and React.
-                        </p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">React</span>
-                            <span class="bg-orange-600 text-white px-3 py-1 rounded-full text-sm">Firebase</span>
-                            <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm">Agile</span>
-                        </div>
-                        <a href="portfolio.html#teamfill" class="text-yellow-400 hover:text-yellow-300 font-semibold">
-                            View Details →
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="text-center mt-12 reveal">
-                <a href="portfolio.html" class="bg-yellow-400 text-black px-8 py-4 rounded-lg font-semibold hover:bg-yellow-300 glow transition-all duration-300 inline-block">
-                    View All Projects
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section class="py-20 bg-black">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid lg:grid-cols-2 gap-12 items-center">
-                <div class="reveal">
-                    <h2 class="text-4xl md:text-5xl font-bold mb-6 gradient-text">About Me</h2>
-                    <p class="text-lg text-gray-300 mb-6">
-                        I'm an innovative Software Engineering graduate from McMaster University with expertise in full-stack development and data engineering. Skilled in architecting scalable cloud solutions using Google Cloud Platform (GCP), BigQuery, and Docker.
-                    </p>
-                    <p class="text-lg text-gray-300 mb-6">
-                        I am proficient in automating complex ETL workflows with Apache Airflow and integrating Generative AI (Gemini) and Machine Learning models for predictive analytics. My passion lies in building robust, maintainable systems that bridge the gap between software engineering and data science.
-                    </p>
-                </div>
-                                
-                <div class="reveal">
-                    <div class="bg-gray-800 rounded-xl p-6">
-                        <h3 class="text-2xl font-bold mb-4 text-yellow-400">Education & Certifications</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <h4 class="font-semibold text-white">Bachelor of Engineering</h4>
-                                <p class="text-gray-400">Software Engineering & Management</p>
-                                <p class="text-sm text-gray-500">McMaster University • Nov 2025</p>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-white">Google Data Analytics Certificate</h4>
-                                <p class="text-gray-400">Professional certification in data analytics</p>
-                                <p class="text-sm text-gray-500">Coursera • In Progress</p>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-white">Computer Networking Certificate</h4>
-                                <p class="text-gray-400">Digital Network Security</p>
-                                <p class="text-sm text-gray-500">Alison • In Progress</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="py-20 bg-gradient-to-b from-black to-gray-900">
-        <div class="max-w-4xl mx-auto px-6 text-center">
             <div class="reveal">
-                <h2 class="text-4xl md:text-5xl font-bold mb-6 gradient-text">Let's Connect</h2>
-                <p class="text-xl text-gray-300 mb-12">
-                    Ready to collaborate on your next project? Let's discuss how I can contribute to your team's success.
-                </p>
-                
-                <div class="grid md:grid-cols-3 gap-8 mb-12">
-                    <div class="text-center">
-                        <div class="bg-yellow-400 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <span class="text-2xl">📧</span>
-                        </div>
-                        <h3 class="font-semibold mb-2">Email</h3>
-                        <p class="text-gray-400">kabirkenth@outlook.com</p>
+                <div class="edu-card">
+                    <div class="edu-item">
+                        <h4>Bachelor of Engineering</h4>
+                        <p class="where">Software Engineering &amp; Management — McMaster University</p>
+                        <p class="when">Hamilton, ON · Graduated Nov 2025</p>
                     </div>
-                    <div class="text-center">
-                        <div class="bg-yellow-400 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <span class="text-2xl">💼</span>
-                        </div>
-                        <h3 class="font-semibold mb-2">LinkedIn</h3>
-                        <p class="text-gray-400">linkedin.com/in/kabirkenth</p>
+                    <div class="edu-item">
+                        <h4>Google Data Analytics Professional Certificate</h4>
+                        <p class="where">Coursera</p>
+                        <p class="when">In progress</p>
                     </div>
-                    <div class="text-center">
-                        <div class="bg-yellow-400 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <span class="text-2xl">🌐</span>
-                        </div>
-                        <h3 class="font-semibold mb-2">Website</h3>
-                        <p class="text-gray-400">kabirkenth.me</p>
+                    <div class="edu-item">
+                        <h4>Computer Networking &amp; Security</h4>
+                        <p class="where">Alison</p>
+                        <p class="when">In progress</p>
                     </div>
                 </div>
-                
-                <a href="experience.html" class="bg-yellow-400 text-black px-8 py-4 rounded-lg font-semibold hover:bg-yellow-300 glow transition-all duration-300 inline-block">
-                    View Full Experience
-                </a>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-black py-8">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <p class="text-gray-400">© 2026 Kabir Kenth. All rights reserved.</p>
+    <!-- Contact -->
+    <section class="section" id="contact">
+        <div class="wrap">
+            <div class="section-head reveal">
+                <p class="eyebrow">Contact</p>
+                <h2>Let's build something</h2>
+                <p>The fastest way to reach me is email — I usually reply within a day.</p>
+            </div>
+            <ul class="contact-list reveal" style="max-width: 560px;">
+                <li><a href="mailto:kabirkenth@outlook.com"><span class="k">Email</span><span class="v">kabirkenth@outlook.com</span></a></li>
+                <li><a href="https://linkedin.com/in/kabirkenth" target="_blank" rel="noopener"><span class="k">LinkedIn</span><span class="v">linkedin.com/in/kabirkenth</span></a></li>
+                <li><a href="tel:+16479708110"><span class="k">Phone</span><span class="v">(647) 970-8110</span></a></li>
+                <li><a href="experience.html#contact"><span class="k">Form</span><span class="v">Send a message →</span></a></li>
+            </ul>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="wrap">
+            <p>© <span id="year">2026</span> Kabir Kenth · Hamilton, ON</p>
+            <div class="footer-links">
+                <a href="https://linkedin.com/in/kabirkenth" target="_blank" rel="noopener">LinkedIn</a>
+                <a href="mailto:kabirkenth@outlook.com">Email</a>
+                <a href="Kabir-Kenth-Resume.pdf" download>Résumé</a>
+            </div>
         </div>
     </footer>
 
