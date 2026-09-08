@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# Local editor / tooling config
+.claude/
+
+# Local working notes and scratch
+NEXT-STEPS.md
+_to_delete/

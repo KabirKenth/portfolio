@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About — Kabir Kenth</title>
+    <meta name="description" content="Kabir Kenth's path into software engineering: freight dispatch data entry, retail operations, then a B.Eng. at McMaster. The long version, with dates.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <a href="#main" class="skip">Skip to content</a>
+
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-mark">kabirkenth<span class="tld">.me</span></a>
+            <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">Menu</button>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="work.html">Work</a>
+                <a href="about.html" aria-current="page">About</a>
+                <a href="#contact">Contact</a>
+                <a href="Kabir-Kenth-Resume.pdf" class="btn">Résumé</a>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main">
+
+    <header class="page-head">
+        <div class="wrap">
+            <p class="label">About</p>
+            <h1>The long way round.</h1>
+            <p class="lede">
+                It took me eleven years to finish a five-year degree. I started at McMaster in 2014 and
+                graduated in November 2025, stepping away more than once along the way.
+                <strong>I'd rather put that here plainly</strong> than have you work it out from the dates.
+            </p>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="wrap">
+            <div class="two-col">
+                <div class="prose reveal">
+                    <h3>The eleven years</h3>
+                    <p>
+                        I enrolled at McMaster in Software Engineering &amp; Management in the autumn of 2014
+                        and graduated in November 2025. In between I took more than one leave of absence and
+                        came back each time. I'm not going to dress that up as a plan — it wasn't one. But I
+                        finished the degree I started, on the harder version of the route.
+                    </p>
+                    <p>
+                        I've decided to state the timeline rather than let it sit as an unexplained gap,
+                        because the silence is what makes it look like something it isn't. If you want to
+                        ask about it in an interview, ask.
+                    </p>
+
+                    <h3>What I did in the gaps</h3>
+                    <p>
+                        I worked the whole way through. From September 2014 — the month I enrolled — until
+                        March 2020 I ran the books for my family's business as its bookkeeper and office
+                        administrator. Reconciling financial records, handling client support and
+                        customer relationships. Five and a half years of it, alongside coursework.
+                    </p>
+                    <p>
+                        In the summer of 2019 I took a contract as operations manager at Benchmark Sports,
+                        preparing financial statements and building projection-based growth models in Excel.
+                        A couple of months on the assembly line at FCA in 2016 before that.
+                    </p>
+                    <p>
+                        Then the recent stretch: a summer of inventory replenishment and cycle counts at Costco
+                        in 2021. The summer of 2022 at Fortel Express, a trucking company, keying freight
+                        documents — bills of lading, load numbers, driver logs — into systems with no shared
+                        identifier between them, then working out which record was wrong when they disagreed.
+                        And in early 2023, a four-month software engineering internship at Bulk Buys, where I
+                        finally got to be on the other side of it — automating a daily re-entry task instead of
+                        performing one.
+                    </p>
+
+                    <div class="callout">
+                        <span class="callout-k">The word that keeps repeating</span>
+                        <p>
+                            Reconciled the books. Reconciled daily cash. Reconciled freight records. I have spent
+                            about a decade being the layer between systems that didn't agree with each other —
+                            and it isn't a coincidence that what I build now is designed so nobody has to be.
+                        </p>
+                    </div>
+
+                    <h3>What it changes about how I work</h3>
+                    <p>
+                        Four things I don't think I'd have otherwise:
+                    </p>
+                    <ul>
+                        <li>
+                            <strong>I know what a manual process costs before I automate it.</strong> The
+                            $6K a year I saved at Bulk Buys wasn't a clever algorithm — it was recognising a
+                            daily re-entry task as an integration and pricing what it was costing the team.
+                        </li>
+                        <li>
+                            <strong>I'm wary of unattended automation.</strong> Years of reconciling records
+                            that systems had confidently written wrong will do that. It's why
+                            ApplyTron won't send a document without a person approving it, even though that
+                            caps its throughput.
+                        </li>
+                        <li>
+                            <strong>I model the domain before the schema.</strong> FreightSwipe's design —
+                            one authoritative load record instead of two copies — comes directly from having
+                            been the person reconciling the two copies.
+                        </li>
+                        <li>
+                            <strong>I know how to come back to something that has gone badly.</strong>
+                            Restarting the same degree more than once isn't a line I'd have chosen for a
+                            resume. It did teach me that the interesting part of any project is what happens
+                            after the first plan fails, which is most of engineering.
+                        </li>
+                    </ul>
+
+                    <div class="callout">
+                        <span class="callout-k">If you're screening me</span>
+                        <p>
+                            One four-month internship is thin, and an eleven-year degree raises a
+                            question. Both are true and neither is the thing I'd lead with. What I'd point at
+                            instead is three systems I designed and shipped end to end, written up on this
+                            site with their architecture, their tradeoffs and their unfinished edges. Read one
+                            and decide whether I think like an engineer.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="reveal">
+                    <img class="portrait" src="resources/portrait.webp"
+                         alt="Kabir Kenth" width="900" height="900" loading="lazy">
+                    <p class="portrait-cap">Kabir Kenth — Brampton, Ontario</p>
+                    <p class="label">Currently</p>
+                    <dl class="facts" style="margin-bottom: 2.5rem;">
+                        <div class="fact"><dt>Seeking</dt><dd>Entry-level software engineering, full-time</dd></div>
+                        <div class="fact"><dt>Based</dt><dd>Brampton, ON — open to Toronto, hybrid or remote</dd></div>
+                        <div class="fact"><dt>Status</dt><dd>Canadian work eligibility</dd></div>
+                        <div class="fact"><dt>Reply time</dt><dd>Usually within a day</dd></div>
+                    </dl>
+                    <a href="Kabir-Kenth-Resume.pdf" class="btn btn-solid">Download résumé</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="wrap">
+            <p class="label reveal">Timeline</p>
+            <h2 class="reveal" style="margin-bottom: 2rem;">All of it, in order.</h2>
+
+            <div class="timeline">
+                <div class="t-item reveal">
+                    <p class="t-when">2026 — present</p>
+                    <div>
+                        <h3>Independent engineering</h3>
+                        <p class="t-org">Brampton, ON</p>
+                        <ul>
+                            <li>Built and shipped <a href="applytron.html" style="color:var(--amber);">ApplyTron</a>, a live multi-user LLM application platform with a mandatory human approval gate</li>
+                            <li>Built and run a <a href="stock-pipeline.html" style="color:var(--amber);">daily Airflow → BigQuery → Gemini pipeline</a> with idempotent loads and tracked model accuracy</li>
+                        </ul>
+                        <ul class="stack"><li>Next.js</li><li>Supabase</li><li>Claude API</li><li>Airflow</li><li>BigQuery</li><li>Docker</li></ul>
+                    </div>
+                </div>
+
+                <div class="t-item reveal">
+                    <p class="t-when">2014 — Nov 2025</p>
+                    <div>
+                        <h3>B.Eng., Software Engineering &amp; Management</h3>
+                        <p class="t-org">McMaster University · Hamilton, ON</p>
+                        <ul>
+                            <li>Enrolled 2014, graduated November 2025 — in and out of full-time study across those years, with more than one leave of absence, and the jobs below worked around them</li>
+                            <li>Capstone: Teamfill — React and Firebase platform matching athletes to pickup teams, delivered by a team under Scrum</li>
+                            <li>Coursework: Algorithms, Data Structures, Cloud Computing, Database Systems</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="t-item reveal">
+                    <p class="t-when">Jan — Apr 2023</p>
+                    <div>
+                        <h3>Software Engineer Intern</h3>
+                        <p class="t-org">Bulk Buys · Brampton, ON</p>
+                        <ul>
+                            <li>Removed a daily manual re-entry task worth $6K+ a year by building a Python integration between Amazon repricing tools and Zoho One</li>
+                            <li>Containerized the team's Python services in Docker, making environments reproducible across machines</li>
+                            <li>Shipped customer-facing e-commerce features working directly with business stakeholders</li>
+                        </ul>
+                        <ul class="stack"><li>Python</li><li>Docker</li><li>Zoho One</li><li>REST APIs</li></ul>
+                    </div>
+                </div>
+
+                <div class="t-item reveal">
+                    <p class="t-when">Summer 2022</p>
+                    <div>
+                        <h3>Dispatch &amp; Data Entry Clerk</h3>
+                        <p class="t-org">Fortel Express · Ontario</p>
+                        <ul>
+                            <li>Keyed and reconciled freight documentation — bills of lading, dispatch records, driver logs — across systems with no shared identifier between them</li>
+                            <li>Traced discrepancies between dispatch, driver and billing records, where one mis-keyed load number could hold an invoice for weeks</li>
+                            <li>Short stint, but it's the domain FreightSwipe is built on and the reason I care about idempotency and single sources of truth</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="t-item reveal">
+                    <p class="t-when">Summer 2021</p>
+                    <div>
+                        <h3>Retail Operations</h3>
+                        <p class="t-org">Costco Wholesale · Ontario</p>
+                        <ul>
+                            <li>Inventory replenishment and cycle counts on a high-volume floor against daily throughput targets</li>
+                            <li>An operation where stock-record accuracy directly determined what customers could actually buy</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="t-item reveal">
+                    <p class="t-when">Sep 2014 — Mar 2020</p>
+                    <div>
+                        <h3>Bookkeeper &amp; Office Administrator</h3>
+                        <p class="t-org">2512484 Ontario Inc. · Family business · Brampton, ON</p>
+                        <ul>
+                            <li>Maintained and reconciled financial records for the family business across five and a half years, run alongside full-time engineering study</li>
+                            <li>Provided technical support to clients and owned the customer relationships end to end</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="t-item reveal">
+                    <p class="t-when">Jun — Aug 2019</p>
+                    <div>
+                        <h3>Operations Manager</h3>
+                        <p class="t-org">Benchmark Sports: Strength &amp; Conditioning · Contract · Brampton, ON</p>
+                        <ul>
+                            <li>Prepared financial statements, invoices, business forecasts and reports</li>
+                            <li>Built projection-based growth models in Excel and performed daily cash reconciliations</li>
+                        </ul>
+                        <ul class="stack"><li>Excel</li><li>Forecasting</li><li>Reconciliation</li></ul>
+                    </div>
+                </div>
+
+                <div class="t-item reveal">
+                    <p class="t-when">Jun — Jul 2016</p>
+                    <div>
+                        <h3>Assembly Line Worker</h3>
+                        <p class="t-org">FCA Fiat Chrysler Automobiles · Brampton, ON</p>
+                        <ul>
+                            <li>High-volume automotive assembly, checking and reporting product errors and damage</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="contact">
+        <div class="wrap">
+            <div class="two-col">
+                <div class="reveal">
+                    <p class="label">Contact</p>
+                    <h2 style="margin-bottom: 1.2rem;">Tell me about the role.</h2>
+                    <p class="lede" style="margin-bottom: 2rem;">
+                        Email is fastest. If you've read a case study and want to dig into a decision I made,
+                        that's the conversation I most want to have.
+                    </p>
+                    <ul class="contact-list">
+                        <li><a href="mailto:kabirkenth@outlook.com"><span class="k">Email</span><span class="v">kabirkenth@outlook.com</span><span class="go">→</span></a></li>
+                        <li><a href="https://linkedin.com/in/kabirkenth" target="_blank" rel="noopener"><span class="k">LinkedIn</span><span class="v">linkedin.com/in/kabirkenth</span><span class="go">↗</span></a></li>
+                        <li><a href="https://github.com/KabirKenth" target="_blank" rel="noopener"><span class="k">GitHub</span><span class="v">github.com/KabirKenth</span><span class="go">↗</span></a></li>
+                        <li><a href="tel:+16479708110"><span class="k">Phone</span><span class="v">(647) 970-8110</span><span class="go">→</span></a></li>
+                    </ul>
+                </div>
+
+                <div class="reveal">
+                    <form action="https://formspree.io/f/manbwzww" method="POST">
+                        <div class="form-row">
+                            <div class="field">
+                                <label for="f-name">Name</label>
+                                <input id="f-name" type="text" name="name" required>
+                            </div>
+                            <div class="field">
+                                <label for="f-email">Email</label>
+                                <input id="f-email" type="email" name="email" required>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="f-subject">Subject</label>
+                            <input id="f-subject" type="text" name="subject" required>
+                        </div>
+                        <div class="field">
+                            <label for="f-message">Message</label>
+                            <textarea id="f-message" name="message" rows="6" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-solid" style="border:1px solid var(--amber); cursor:pointer;">Send message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="wrap">
+            <p>© <span id="year">2026</span> Kabir Kenth — Brampton, ON</p>
+            <div class="footer-links">
+                <a href="https://github.com/KabirKenth" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://linkedin.com/in/kabirkenth" target="_blank" rel="noopener">LinkedIn</a>
+                <a href="mailto:kabirkenth@outlook.com">Email</a>
+                <a href="Kabir-Kenth-Resume.pdf">Résumé</a>
+            </div>
+        </div>
+    </footer>
+    <script src="main.js"></script>
+</body>
+</html>

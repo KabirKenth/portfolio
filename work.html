@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work — Kabir Kenth</title>
+    <meta name="description" content="Case studies from Kabir Kenth — ApplyTron, a daily market sentiment pipeline, and FreightSwipe. Architecture, decisions, tradeoffs and honest limitations.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <a href="#main" class="skip">Skip to content</a>
+
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-mark">kabirkenth<span class="tld">.me</span></a>
+            <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">Menu</button>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="work.html" aria-current="page">Work</a>
+                <a href="about.html">About</a>
+                <a href="about.html#contact">Contact</a>
+                <a href="Kabir-Kenth-Resume.pdf" class="btn">Résumé</a>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main">
+
+    <header class="page-head">
+        <div class="wrap">
+            <p class="label">Work</p>
+            <h1>Three systems, and what they cost to build.</h1>
+            <p class="lede">
+                Each case study covers the constraint the system was built around, the architecture,
+                the decisions I'd defend, and <strong>what isn't finished</strong>. I'd rather you find
+                the limitations here than in an interview.
+            </p>
+        </div>
+    </header>
+
+    <section class="section" style="padding-top: clamp(2rem, 5vw, 3.5rem);">
+        <div class="wrap">
+            <div class="work-index">
+                <a class="work-row reveal" href="applytron.html">
+                    <span class="work-num">01</span>
+                    <span>
+                        <span class="work-title">ApplyTron</span>
+                        <p class="work-sub">LLM job-application platform with a human approval gate</p>
+                    </span>
+                    <span>
+                        <span class="meta-line">
+                            <span class="status status-live">Live</span>
+                            <span class="year">2026</span>
+                        </span>
+                        <p class="work-note">A guarded state machine around an LLM. Adzuna ingest, Claude scoring, generated ATS-safe PDFs, and a hard stop for human approval before anything irreversible happens.</p>
+                        <ul class="stack"><li>Next.js</li><li>TypeScript</li><li>Supabase</li><li>Claude API</li><li>Playwright</li><li>Railway</li></ul>
+                    </span>
+                    <span class="work-go">Case study →</span>
+                </a>
+
+                <a class="work-row reveal" href="stock-pipeline.html">
+                    <span class="work-num">02</span>
+                    <span>
+                        <span class="work-title">Market Sentiment Pipeline</span>
+                        <p class="work-sub">Daily ELT from news text to a tracked signal</p>
+                    </span>
+                    <span>
+                        <span class="meta-line">
+                            <span class="status status-live">Running daily</span>
+                            <span class="year">2026</span>
+                        </span>
+                        <p class="work-note">Containerized Airflow into BigQuery with idempotent merges, Gemini sentiment scoring, a Random Forest signal, and a dashboard that grades the model's own predictions.</p>
+                        <ul class="stack"><li>Python</li><li>Airflow</li><li>BigQuery</li><li>Gemini</li><li>Docker</li><li>Looker Studio</li></ul>
+                    </span>
+                    <span class="work-go">Case study →</span>
+                </a>
+
+                <a class="work-row reveal" href="freightswipe.html">
+                    <span class="work-num">03</span>
+                    <span>
+                        <span class="work-title">FreightSwipe</span>
+                        <p class="work-sub">Two-sided load matching for truckers and shippers</p>
+                    </span>
+                    <span>
+                        <span class="meta-line">
+                            <span class="status status-live">Live demo</span>
+                            <span class="year">2025 – 2026</span>
+                        </span>
+                        <p class="work-note">Designed from a summer inside freight dispatch. One authoritative load record instead of two copies to reconcile, and a pickup event neither side can claim alone — the problem I used to fix by hand. Deployed, with a demo you can open without registering.</p>
+                        <ul class="stack"><li>React</li><li>Express</li><li>PostgreSQL</li><li>Prisma</li><li>JWT</li><li>Docker</li><li>Vercel</li></ul>
+                    </span>
+                    <span class="work-go">Case study →</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="wrap">
+            <p class="label reveal">Also built</p>
+            <h2 class="reveal" style="max-width: 22ch; margin-bottom: 1rem;">Smaller things, listed plainly.</h2>
+            <p class="lede reveal" style="margin-bottom: 2rem;">
+                Coursework and earlier builds. Not case studies — I'd rather show you three things properly
+                than six things thinly.
+            </p>
+
+            <div class="work-index">
+                <div class="work-row reveal" style="cursor: default;">
+                    <span class="work-num">04</span>
+                    <span>
+                        <span class="work-title" style="font-size: 1.3rem;">Teamfill</span>
+                        <p class="work-sub">McMaster capstone — matching athletes to pickup teams</p>
+                    </span>
+                    <span>
+                        <span class="meta-line"><span class="status status-arch">Capstone</span><span class="year">2025</span></span>
+                        <p class="work-note">React and Firebase, delivered as a team under Scrum with full design and validation documentation. My first experience of a spec surviving contact with four other people.</p>
+                        <ul class="stack"><li>React</li><li>Firebase</li><li>Scrum</li></ul>
+                    </span>
+                    <span class="work-go"></span>
+                </div>
+
+                <div class="work-row reveal" style="cursor: default;">
+                    <span class="work-num">05</span>
+                    <span>
+                        <span class="work-title" style="font-size: 1.3rem;">Retail Data Scraper</span>
+                        <p class="work-sub">Polite, resumable product data collection</p>
+                    </span>
+                    <span>
+                        <span class="meta-line"><span class="status status-arch">Build</span><span class="year">2024</span></span>
+                        <p class="work-note">Exponential backoff, rate limiting and indexed local storage. Where I first learned that the retry policy matters more than the parser.</p>
+                        <ul class="stack"><li>Python</li><li>BeautifulSoup</li><li>SQLite</li><li>Docker</li></ul>
+                    </span>
+                    <span class="work-go"></span>
+                </div>
+
+                <div class="work-row reveal" style="cursor: default;">
+                    <span class="work-num">06</span>
+                    <span>
+                        <span class="work-title" style="font-size: 1.3rem;">Bulk Buys — internship</span>
+                        <p class="work-sub">Production automation for a live e-commerce operation</p>
+                    </span>
+                    <span>
+                        <span class="meta-line"><span class="status status-live">Shipped to production</span><span class="year">2023</span></span>
+                        <p class="work-note">Automated a daily manual re-entry task between Amazon repricing and Zoho One, worth $6K+ a year, and containerized the team's Python services.</p>
+                        <ul class="stack"><li>Python</li><li>Docker</li><li>Zoho One</li><li>REST APIs</li></ul>
+                    </span>
+                    <span class="work-go"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="wrap">
+            <p>© <span id="year">2026</span> Kabir Kenth — Brampton, ON</p>
+            <div class="footer-links">
+                <a href="https://github.com/KabirKenth" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://linkedin.com/in/kabirkenth" target="_blank" rel="noopener">LinkedIn</a>
+                <a href="mailto:kabirkenth@outlook.com">Email</a>
+                <a href="Kabir-Kenth-Resume.pdf">Résumé</a>
+            </div>
+        </div>
+    </footer>
+    <script src="main.js"></script>
+</body>
+</html>

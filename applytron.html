@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApplyTron — Case Study — Kabir Kenth</title>
+    <meta name="description" content="ApplyTron: a live LLM-powered job application platform with a mandatory human approval gate. Next.js, Supabase, Claude API, Playwright. Architecture, decisions and tradeoffs.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <a href="#main" class="skip">Skip to content</a>
+
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-mark">kabirkenth<span class="tld">.me</span></a>
+            <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">Menu</button>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="work.html" aria-current="page">Work</a>
+                <a href="about.html">About</a>
+                <a href="about.html#contact">Contact</a>
+                <a href="Kabir-Kenth-Resume.pdf" class="btn">Résumé</a>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main">
+
+    <header class="page-head">
+        <div class="wrap">
+            <a href="work.html" class="back">← All work</a>
+            <p class="label">Case study 01</p>
+            <h1>ApplyTron</h1>
+            <div class="meta-line">
+                <span class="status status-live">Live</span>
+                <span class="year">2026</span>
+                <span class="year">·</span>
+                <a class="year" href="https://app.kabirkenth.me" target="_blank" rel="noopener" style="color: var(--amber); text-decoration: none;">app.kabirkenth.me ↗</a>
+            </div>
+            <p class="lede">
+                A job-hunt pipeline that ingests listings, scores them against your real resume with an LLM,
+                writes tailored ATS-safe documents — and then <strong>stops and asks you</strong> before
+                anything is sent anywhere.
+            </p>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="wrap">
+            <div class="prose">
+                <h3>The problem I was actually solving</h3>
+                <p>
+                    Applying to jobs at volume is a data pipeline wearing a trench coat. The listings are
+                    an unstructured feed. The resume is a document that needs to be re-derived per target.
+                    The submission is a form fill. Every part of it is automatable, and there are a hundred
+                    tools that automate it.
+                </p>
+                <p>
+                    The reason most of them are useless is that they will happily send a wrong document to
+                    a real employer, and you find out later. That failure mode is not hypothetical to me —
+                    I've spent months reconciling records that systems had confidently written wrong.
+                    So the design constraint came first, before the stack:
+                </p>
+
+                <div class="callout">
+                    <span class="callout-k">Design constraint</span>
+                    <p>
+                        The system may do anything reversible without asking. It may not do anything
+                        irreversible — sending a document to an employer — without an explicit human approval
+                        recorded against that specific document.
+                    </p>
+                </div>
+
+                <h3>Architecture</h3>
+            </div>
+
+            <figure class="diagram reveal" data-flow="applytron">
+                <svg viewBox="0 0 940 300" role="img" aria-labelledby="d1title d1desc">
+                    <title id="d1title">ApplyTron system architecture</title>
+                    <desc id="d1desc">Job listings flow from Adzuna through a nightly ingest task into Postgres, are scored by the Claude API, rendered into PDFs, then held at a human approval gate delivered by email before a Playwright worker submits them.</desc>
+
+                    <!-- platform labels -->
+                    <text class="d-t-sm" x="73"  y="80" text-anchor="middle">adzuna</text>
+                    <text class="d-t-sm" x="231" y="80" text-anchor="middle">trigger.dev</text>
+                    <text class="d-t-sm" x="389" y="80" text-anchor="middle">anthropic</text>
+                    <text class="d-t-sm" x="547" y="80" text-anchor="middle">vercel</text>
+                    <text class="d-t-accent" x="705" y="80" text-anchor="middle">resend → you</text>
+                    <text class="d-t-sm" x="863" y="80" text-anchor="middle">railway</text>
+
+                    <!-- main chain -->
+                    <rect class="d-box" data-node="listings"        x="8"   y="94" width="130" height="58" rx="4"/>
+                    <rect class="d-box" data-node="ingest"        x="166" y="94" width="130" height="58" rx="4"/>
+                    <rect class="d-box" data-node="score"        x="324" y="94" width="130" height="58" rx="4"/>
+                    <rect class="d-box" data-node="generate"        x="482" y="94" width="130" height="58" rx="4"/>
+                    <rect class="d-box-gate" data-node="gate"   x="640" y="88" width="130" height="70" rx="4"/>
+                    <rect class="d-box" data-node="submit"        x="798" y="94" width="130" height="58" rx="4"/>
+
+                    <text class="d-t"    x="73"  y="118" text-anchor="middle">Listings</text>
+                    <text class="d-t-sm" x="73"  y="136" text-anchor="middle">job feed API</text>
+
+                    <text class="d-t"    x="231" y="118" text-anchor="middle">Ingest</text>
+                    <text class="d-t-sm" x="231" y="136" text-anchor="middle">nightly, deduped</text>
+
+                    <text class="d-t"    x="389" y="118" text-anchor="middle">Score</text>
+                    <text class="d-t-sm" x="389" y="136" text-anchor="middle">Claude vs. resume</text>
+
+                    <text class="d-t"    x="547" y="118" text-anchor="middle">Generate</text>
+                    <text class="d-t-sm" x="547" y="136" text-anchor="middle">react-pdf, ATS-safe</text>
+
+                    <text class="d-t"        x="705" y="116" text-anchor="middle">Approve</text>
+                    <text class="d-t-accent" x="705" y="133" text-anchor="middle">HUMAN GATE</text>
+                    <text class="d-t-sm"     x="705" y="149" text-anchor="middle">per document</text>
+
+                    <text class="d-t"    x="863" y="118" text-anchor="middle">Submit</text>
+                    <text class="d-t-sm" x="863" y="136" text-anchor="middle">Playwright + shot</text>
+
+                    <!-- arrows -->
+                    <g class="d-line">
+                        <path d="M138 123 H160"/><path d="M296 123 H318"/>
+                        <path d="M454 123 H476"/>
+                    </g>
+                    <g class="d-line-accent">
+                        <path d="M612 123 H634"/><path d="M770 123 H792"/>
+                    </g>
+                    <g fill="var(--edge-hi)">
+                        <path d="M160 123 l-6 -3.5 v7 z"/><path d="M318 123 l-6 -3.5 v7 z"/>
+                        <path d="M476 123 l-6 -3.5 v7 z"/>
+                    </g>
+                    <g fill="var(--amber)">
+                        <path d="M634 123 l-6 -3.5 v7 z"/><path d="M792 123 l-6 -3.5 v7 z"/>
+                    </g>
+
+                    <!-- reject / regenerate loop -->
+                    <path class="d-line-dash" d="M690 158 V190 H547 V158"/>
+                    <path d="M547 158 l-3.5 6 h7 z" fill="var(--bone-mut)"/>
+                    <text class="d-t-sm" x="618" y="204" text-anchor="middle">edit &amp; regenerate on reject</text>
+
+                    <!-- persistence layer -->
+                    <rect class="d-group" x="166" y="232" width="604" height="52" rx="4"/>
+                    <text class="d-t-group" x="186" y="252">Supabase</text>
+                    <text class="d-t-sm" x="186" y="270">Postgres · row-level security per user · auth · document storage</text>
+
+                    <g class="d-line-dash">
+                        <path d="M231 152 V232"/><path d="M389 152 V232"/>
+                        <path d="M547 152 V232"/><path d="M705 158 V232"/>
+                    </g>
+                </svg>
+                <div class="flow-controls">
+                    <span class="flow-status" data-flow-status>Watching a single application move through the pipeline…</span>
+                    <div class="flow-actions">
+                        <button class="btn btn-solid" data-act="approve" disabled>Approve</button>
+                        <button class="btn" data-act="reject" disabled>Reject</button>
+                        <button class="btn" data-act="replay">Replay</button>
+                    </div>
+                </div>
+                <figcaption>
+                    This diagram is running. The document stops at the gate and will not move until you press
+                    a button — which is exactly what the deployed system does. Every stage writes state back to
+                    Postgres, so a failure at any point is resumable rather than restart-from-zero.
+                </figcaption>
+            </figure>
+
+            <div class="prose">
+                <h3>The state machine underneath it</h3>
+                <p>
+                    The LLM call is the least interesting part of this system. The engineering is the guarded
+                    transition table around it — a document can only move where the machine allows, which is
+                    what makes "it cannot skip the approval step" a property rather than a promise.
+                    <strong>Try to break it:</strong> the only buttons offered are the legal transitions from
+                    wherever the document currently is.
+                </p>
+            </div>
+
+            <div class="widget reveal" data-widget="statemachine">
+                <div class="widget-head">
+                    <h4>Document lifecycle — live</h4>
+                    <div class="widget-actions">
+                        <button class="btn" data-act="sm-reset">Reset</button>
+                    </div>
+                </div>
+                <ul class="sm-track" data-sm-track></ul>
+                <div class="sm-actions" data-sm-actions></div>
+                <ul class="sm-log" data-sm-log></ul>
+            </div>
+
+            <div class="prose">
+                <h3>Decisions and what they cost</h3>
+            </div>
+
+            <div class="table-scroll">
+                <table class="decisions">
+                    <thead>
+                        <tr><th>Decision</th><th>Why</th><th>What it costs</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mandatory approval gate</td>
+                            <td>An unattended agent sending wrong documents to real employers is unrecoverable. Reputation damage has no rollback.</td>
+                            <td>It is no longer "fire and forget". Throughput is capped by how often the user checks email.</td>
+                        </tr>
+                        <tr>
+                            <td>Claude Haiku for scoring</td>
+                            <td>Scoring runs across every ingested listing nightly. The cheap model is accurate enough for a ranking decision and keeps per-run cost viable.</td>
+                            <td>Weaker on nuanced role fit than a larger model. Mitigated by only using the score to rank, never to reject outright.</td>
+                        </tr>
+                        <tr>
+                            <td>Row-level security in Postgres</td>
+                            <td>Multi-user from day one. Authorization enforced in the database rather than in application code, so a route that forgets a check still cannot leak.</td>
+                            <td>Policies are harder to debug than a plain conditional, and every new table needs its policy written deliberately.</td>
+                        </tr>
+                        <tr>
+                            <td>Playwright worker on a separate host</td>
+                            <td>Headless Chromium needs long-running processes and real memory. That does not belong in a serverless request.</td>
+                            <td>A second deployment target, a second set of secrets, and a queue between the two to keep them decoupled.</td>
+                        </tr>
+                        <tr>
+                            <td>react-pdf instead of an HTML-to-PDF service</td>
+                            <td>ATS parsers read the text layer. Generating the document structure directly keeps it real text rather than a rendered image.</td>
+                            <td>Layout control is more limited than a browser engine, so the templates are deliberately plain.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="prose">
+                <div class="honest">
+                    <span class="callout-k">Where it stands, honestly</span>
+                    <ul>
+                        <li>Auth, ingest, scoring, document generation and the approval flow are live and multi-user today.</li>
+                        <li>Automated submission works against standard form-based application pages. It does not attempt Workday or Greenhouse-style multi-step flows yet — those need per-ATS adapters, which is the next piece of work.</li>
+                        <li>There is no retry queue with backoff on the worker yet; a failed submission surfaces to the user rather than self-healing.</li>
+                        <li>Scoring quality has not been measured against a labelled set. I can tell you it ranks sensibly; I cannot yet tell you its precision, and I would rather say that than quote a number I made up.</li>
+                    </ul>
+                </div>
+
+                <h3>What I'd tell you in an interview</h3>
+                <p>
+                    The interesting engineering here isn't the LLM call — it's the state machine around it.
+                    A document moves through <em>ingested → scored → generated → awaiting approval → approved
+                    → submitted</em>, and every transition is guarded, because the whole value of the system
+                    is that it cannot skip a step. Getting that right, including what happens when a user
+                    approves a document and then the submission fails, was most of the work.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="wrap">
+            <hr class="rule" style="margin-bottom: 2rem;">
+            <div style="display:flex; flex-wrap:wrap; gap:0.7rem; align-items:center; justify-content:space-between;">
+                <div>
+                    <p class="label plain" style="margin-bottom:0.6rem;">Stack</p>
+                    <ul class="stack">
+                        <li>Next.js</li><li>TypeScript</li><li>Supabase</li><li>PostgreSQL</li><li>Claude API</li><li>react-pdf</li><li>Resend</li><li>Trigger.dev</li><li>Playwright</li><li>Railway</li><li>Docker</li>
+                    </ul>
+                </div>
+                <div style="display:flex; gap:0.7rem; flex-wrap:wrap;">
+                    <a class="btn btn-solid" href="https://app.kabirkenth.me" target="_blank" rel="noopener">Open ApplyTron ↗</a>
+                    <a class="btn" href="stock-pipeline.html">Next case study →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="wrap">
+            <p>© <span id="year">2026</span> Kabir Kenth — Brampton, ON</p>
+            <div class="footer-links">
+                <a href="https://github.com/KabirKenth" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://linkedin.com/in/kabirkenth" target="_blank" rel="noopener">LinkedIn</a>
+                <a href="mailto:kabirkenth@outlook.com">Email</a>
+                <a href="Kabir-Kenth-Resume.pdf">Résumé</a>
+            </div>
+        </div>
+    </footer>
+    <script src="main.js"></script>
+    <script src="interactive.js"></script>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreightSwipe — Case Study — Kabir Kenth</title>
+    <meta name="description" content="FreightSwipe: a deployed two-sided freight matching platform designed from a summer inside freight dispatch. React, Express, Prisma, PostgreSQL, JWT in an httpOnly cookie, Vercel. Live demo, no registration.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <a href="#main" class="skip">Skip to content</a>
+
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-mark">kabirkenth<span class="tld">.me</span></a>
+            <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">Menu</button>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="work.html" aria-current="page">Work</a>
+                <a href="about.html">About</a>
+                <a href="about.html#contact">Contact</a>
+                <a href="Kabir-Kenth-Resume.pdf" class="btn">Résumé</a>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main">
+
+    <header class="page-head">
+        <div class="wrap">
+            <a href="work.html" class="back">← All work</a>
+            <p class="label">Case study 03</p>
+            <h1>FreightSwipe</h1>
+            <div class="meta-line">
+                <span class="status status-live">Live demo</span>
+                <span class="year">2025 – 2026</span>
+                <a class="year" href="https://freightswipe.vercel.app" target="_blank" rel="noopener" style="color: var(--amber); text-decoration: none;">freightswipe.vercel.app ↗</a>
+            </div>
+            <p class="lede">
+                A two-sided load-matching platform for truckers and shippers, deployed and running against a
+                live database. This is the project I could only have designed because
+                <strong>I did the job it replaces</strong>.
+            </p>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="wrap">
+            <div class="prose">
+                <div class="callout">
+                    <span class="callout-k">Try it — no registration</span>
+                    <p>
+                        The landing page has <strong>Explore as a shipper</strong> and
+                        <strong>Explore as a trucker</strong> buttons that sign you straight into a seeded demo
+                        account. Open two browsers, take one side in each, and you can run a load end to end:
+                        post it, swipe on it, accept, both confirm pickup, deliver, review.
+                    </p>
+                    <p style="margin-bottom:0;">
+                        <a class="btn btn-solid" href="https://freightswipe.vercel.app" target="_blank" rel="noopener">Open the live demo ↗</a>
+                    </p>
+                </div>
+
+                <h3>Where this came from</h3>
+                <p>
+                    In the summer of 2022, partway through my degree, I did dispatch data entry at Fortel
+                    Express, a trucking company. A load would arrive as a phone call, get written on paper, get
+                    keyed into one system, then get keyed again into billing by someone else. The two systems
+                    had no shared identifier for the same load. When they disagreed — and they disagreed
+                    constantly — a human had to work out which one was lying.
+                </p>
+                <p>
+                    Every freight board I saw treated matching as the interesting problem and reconciliation
+                    as somebody else's. From the inside, it's the opposite: finding a load takes minutes,
+                    and arguing about what happened to it takes weeks.
+                </p>
+
+                <div class="callout">
+                    <span class="callout-k">The design position</span>
+                    <p>
+                        The load is the entity, not the listing. One record, one identifier, one lifecycle,
+                        visible to both sides of the match from posting through delivery — so there is never a
+                        second version of the truth to reconcile against.
+                    </p>
+                </div>
+
+                <h3>Architecture</h3>
+            </div>
+
+            <figure class="diagram reveal" data-flow="freight">
+                <svg viewBox="0 0 940 300" role="img" aria-labelledby="d3title d3desc">
+                    <title id="d3title">FreightSwipe system architecture</title>
+                    <desc id="d3desc">Trucker and shipper clients use a React single-page app that talks to an Express REST API authenticated by a JWT in an httpOnly cookie, which routes to matching, load lifecycle and review handlers backed by Prisma and PostgreSQL. The bundle and the API are served from one Vercel domain.</desc>
+
+                    <text class="d-t-group" x="8" y="46">Roles</text>
+                    <rect class="d-box" x="8" y="76"  width="104" height="50" rx="4"/>
+                    <rect class="d-box" x="8" y="156" width="104" height="50" rx="4"/>
+                    <text class="d-t"    x="60" y="98"  text-anchor="middle">Trucker</text>
+                    <text class="d-t-sm" x="60" y="114" text-anchor="middle">seeks loads</text>
+                    <text class="d-t"    x="60" y="178" text-anchor="middle">Shipper</text>
+                    <text class="d-t-sm" x="60" y="194" text-anchor="middle">posts loads</text>
+
+                    <rect class="d-box" x="148" y="96" width="132" height="90" rx="4"/>
+                    <text class="d-t"    x="214" y="126" text-anchor="middle">React SPA</text>
+                    <text class="d-t-sm" x="214" y="144" text-anchor="middle">swipe deck</text>
+                    <text class="d-t-sm" x="214" y="160" text-anchor="middle">role-based dashboards</text>
+
+                    <rect class="d-box-accent" data-node="api" x="316" y="96" width="140" height="90" rx="4"/>
+                    <text class="d-t"        x="386" y="126" text-anchor="middle">Express REST API</text>
+                    <text class="d-t-accent" x="386" y="146" text-anchor="middle">JWT httpOnly cookie</text>
+                    <text class="d-t-sm"     x="386" y="164" text-anchor="middle">auth on every private route</text>
+
+                    <rect class="d-group" data-node="services" x="492" y="46" width="212" height="196" rx="5"/>
+                    <text class="d-t-group" x="508" y="66">Route handlers</text>
+                    <rect class="d-box" x="508" y="80"  width="180" height="44" rx="3"/>
+                    <rect class="d-box" x="508" y="136" width="180" height="44" rx="3"/>
+                    <rect class="d-box" x="508" y="192" width="180" height="40" rx="3"/>
+                    <text class="d-t"    x="598" y="100" text-anchor="middle">Matching</text>
+                    <text class="d-t-sm" x="598" y="116" text-anchor="middle">swipe → shipper accepts</text>
+                    <text class="d-t"    x="598" y="156" text-anchor="middle">Load lifecycle</text>
+                    <text class="d-t-sm" x="598" y="172" text-anchor="middle">5 statuses, guarded moves</text>
+                    <text class="d-t"    x="598" y="212" text-anchor="middle">Two-way reviews</text>
+
+                    <rect class="d-box" data-node="db" x="740" y="96" width="190" height="90" rx="4"/>
+                    <text class="d-t"        x="835" y="126" text-anchor="middle">Prisma → PostgreSQL</text>
+                    <text class="d-t-accent" x="835" y="146" text-anchor="middle">one load, one id</text>
+                    <text class="d-t-sm"     x="835" y="164" text-anchor="middle">both sides read the same row</text>
+
+                    <g class="d-line">
+                        <path d="M112 101 H132 V141 H142"/>
+                        <path d="M112 181 H132 V141 H142"/>
+                        <path d="M280 141 H310"/>
+                        <path d="M456 141 H486"/>
+                    </g>
+                    <g class="d-line-accent">
+                        <path d="M704 141 H734"/>
+                    </g>
+                    <g fill="var(--edge-hi)">
+                        <path d="M148 141 l-6 -3.5 v7 z"/><path d="M310 141 l-6 -3.5 v7 z"/>
+                        <path d="M486 141 l-6 -3.5 v7 z"/>
+                    </g>
+                    <path d="M734 141 l-6 -3.5 v7 z" fill="var(--amber)"/>
+
+                    <text class="d-t-sm" x="835" y="212" text-anchor="middle">the reconciliation step this design removes</text>
+                    <path class="d-line-dash" d="M835 186 V200"/>
+
+                    <rect class="d-group" x="148" y="264" width="782" height="26" rx="3"/>
+                    <text class="d-t-group" x="164" y="281">One Vercel domain — static React bundle plus a serverless Express function at /api</text>
+                </svg>
+                <div class="flow-controls">
+                    <span class="flow-status" data-flow-status>Two parties, one record…</span>
+                    <div class="flow-actions">
+                        <button class="btn" data-act="replay">Replay</button>
+                    </div>
+                </div>
+                <figcaption>
+                    Nothing exotic in the stack. The opinion is in the data model: a single authoritative load
+                    record that both parties act on, rather than a listing each side copies into its own system.
+                </figcaption>
+            </figure>
+
+            <div class="prose">
+                <h3>The part worth reading the code for</h3>
+                <p>
+                    A load moves <code>PENDING → MATCHED → IN_TRANSIT → COMPLETED</code>, with
+                    <code>CANCELLED</code> off to the side. Two of those transitions are the whole design
+                    argument.
+                </p>
+                <p>
+                    <strong>A shipper accepting a match closes the load.</strong> When the shipper accepts one
+                    trucker's swipe, that same request rejects every other pending swipe on the load and flips the
+                    load itself to <code>MATCHED</code>, so the deck can't leave two truckers both believing
+                    they have it. (Those three writes aren't wrapped in a transaction, which they should be. The load
+                    is updated last, so a failure part-way through leaves an accepted match sitting against a
+                    load still marked <code>PENDING</code>.)
+                </p>
+                <p>
+                    <strong>Pickup needs both signatures.</strong> The load carries
+                    <code>shipperInTransitConfirmed</code> and <code>truckerInTransitConfirmed</code> as
+                    separate columns. Either side can set their own flag, and the status does not move until
+                    both are true — one side confirming alone gets their flag persisted and the load handed back
+                    with its status untouched. This is the disagreement I used to resolve by hand, made structurally impossible:
+                    "when did it get picked up" has one answer, and it exists only once both parties said so.
+                </p>
+                <p>
+                    Delivery is deliberately asymmetric — only the shipper can mark a load
+                    <code>COMPLETED</code>, and only from <code>IN_TRANSIT</code>. Reviews unlock only on a
+                    completed load, and a duplicate from the same reviewer is rejected server-side rather than by
+                    the UI hiding the button. What that handler does <em>not</em> check is that the reviewer
+                    was a party to the load — see the limitations below.
+                </p>
+
+                <h3>Decisions and what they cost</h3>
+            </div>
+
+            <div class="table-scroll">
+                <table class="decisions">
+                    <thead>
+                        <tr><th>Decision</th><th>Why</th><th>What it costs</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>One shared load record, not per-side copies</td>
+                            <td>Removes the reconciliation work entirely. If there is only one row, the two sides cannot disagree about it.</td>
+                            <td>Permissions get harder — both parties read the same row and need different write rights on different fields at different lifecycle stages.</td>
+                        </tr>
+                        <tr>
+                            <td>Two-party confirmation on pickup</td>
+                            <td>"In transit" has to mean the same thing to a trucker and a shipper, or the platform is worthless as a record of what happened.</td>
+                            <td>A load can sit half-confirmed indefinitely — no timeout, no nudge, no way to force it through. The shipper's only exit is to cancel and eat the fee. The trucker has no exit at all, which is the wrong way round: they're the party with a truck committed to it.</td>
+                        </tr>
+                        <tr>
+                            <td>Swipe deck instead of a filterable board</td>
+                            <td>Freight boards are dense tables that assume you already know what you want. A trucker scanning for a return leg is making a fast yes/no call, not running a query.</td>
+                            <td>The deck has no relevance logic — it hands back every open load the trucker hasn't already acted on, newest first. No lane, weight, date or rate scoring of any kind. That is fine at demo volume and useless at real volume, and it's the first thing I would build next.</td>
+                        </tr>
+                        <tr>
+                            <td>Frontend and API on one origin, auth in an httpOnly cookie</td>
+                            <td>Browsers won't send cookies on cross-site XHR unless they're marked <code>SameSite=None; Secure</code>. Serving the API from <code>/api</code> on the same domain keeps the cookie first-party — no <code>SameSite=None</code>, no CORS preflight, no second service to cold-start. The token is unreachable from JavaScript.</td>
+                            <td>The API is coupled to the frontend's deployment — they ship together whether or not both changed. And the JWT is stateless with a seven-day life: logout clears the cookie, but a token already captured stays valid until it expires. Revocation needs refresh-token rotation, which isn't built.</td>
+                        </tr>
+                        <tr>
+                            <td>Prisma over raw SQL</td>
+                            <td>Migrations and type safety mattered more than query control for a schema I was still discovering.</td>
+                            <td>Less control over query plans, and the swipe query — which loads every open load and every match the trucker has made — is the first place that will hurt at volume.</td>
+                        </tr>
+                        <tr>
+                            <td>Deploy as one Vercel project on serverless</td>
+                            <td>Free to run, and the same <code>app.js</code> serves both the container (via Docker Compose locally) and the serverless function, so there is one set of routes to maintain rather than two.</td>
+                            <td>Migrations can't run through a transaction pooler, so the schema needs a second direct connection alongside the pooled runtime one — two URLs to keep straight, and a deploy that runs migrations against production as a build step. Cold starts are real, and the shared <code>app.js</code> has to stay careful about anything that assumes a long-lived process.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="prose">
+                <div class="honest">
+                    <span class="callout-k">Where it stands, honestly</span>
+                    <ul>
+                        <li><strong>It's deployed and it works, but there are no real users.</strong> The database holds seeded demo data, not real freight. Everything the demo lets you do — auth, posting, the swipe deck, both dashboards, the full status machine, cancellation and reviews — is genuinely running against Postgres. None of it has carried an actual load.</li>
+                        <li><strong>There is no matching algorithm.</strong> The deck returns every open load a trucker hasn't already swiped on, newest first. That's the whole of it — no lane, weight, date or rate scoring, no relevance ordering, nothing that narrows a real freight market down to what you'd actually haul. Calling it "matching" oversells it: the app binds two <em>parties</em> to one record, it just doesn't help you choose which.</li>
+                        <li><strong>No unit, integration or component tests.</strong> Not one <code>*.test.js</code> in the repository — everything has been verified by hand. There is a committed Playwright smoke script that signs in as each demo role and walks 16 of the app's 18 routes, asserting no error boundary and no console errors. It performs no writes and isn't wired into CI, so the status machine and the role checks — where the actual risk lives — have no coverage at all. I wrote the strategy to close that in <code>TESTING.md</code> before writing the tests, and the tests are still the gap. The section below is what happens when you skip them.</li>
+                        <li><strong>Authorization is enforced unevenly, and I found that out writing this page.</strong> The routes the demo actually exercises scope their data correctly — a trucker's board is their board, a shipper's loads are their loads. But that came from writing each handler carefully rather than from a middleware everything passes through, and auditing the file against this write-up turned up handlers where the check I assumed was there isn't: a couple that never verify the caller's role, and a review endpoint that confirms the load is delivered without confirming the reviewer had anything to do with it. One read endpoint returns more of the user record than it has any business returning. I'm fixing those rather than leaving them behind a paragraph that says the permission model is solid. The lesson is the boring one: per-handler checks look fine right up until you enumerate them, which is exactly the job an integration suite does and mine doesn't exist.</li>
+                        <li><strong>The money is fake.</strong> Balances are a float column and the $5 cancellation fee decrements it inside a transaction — but nothing anywhere credits a balance, so the fee simply disappears. There is no payment processor, no escrow, no invoicing, which, given that billing is where I watched the reconciliation pain actually land, is a conspicuous hole.</li>
+                        <li><strong>Two and a half roles, and no route guards.</strong> The page above describes a two-sided system; there's also a seeded <code>ADMIN</code> role with a platform-wide read of every match and a dashboard that is still an empty placeholder. The React router has no auth gate on any path either — every dashboard route renders for anyone who types it, and what protects the data is the API refusing to fill it in.</li>
+                        <li><strong>No outside integrations.</strong> No load boards, no ELD telemetry, no rate APIs. Addresses come from Google Places autocomplete; everything else is typed in.</li>
+                        <li>What it demonstrates is domain modelling — a load lifecycle that makes a specific, expensive disagreement structurally impossible — running on infrastructure that stays up. The data model is the part I'd defend. The enforcement around it is a first draft, and I'd rather scope that accurately than dress it up.</li>
+                    </ul>
+                </div>
+
+                <h3>What I'd tell you in an interview</h3>
+                <p>
+                    The swipe deck is what people notice and the least interesting part — it's a list with no
+                    query behind it. Ask me about the two-party confirmation instead: two roles, one row,
+                    different write rights per field per lifecycle stage, and a pickup event that only exists
+                    when both sides have said so. That's the problem I actually spent my time on, and I
+                    understood it from the wrong end first — I was the person cleaning up when it went wrong.
+                </p>
+                <p>
+                    Then ask me why I shipped it with no tests, because the two things are connected. I was
+                    optimising for something deployed and demonstrable, and the cost showed up immediately:
+                    auditing my own authorization to write this page honestly turned up gaps I'd have caught
+                    on day one with the integration tier <code>TESTING.md</code> describes. I'd rather show you
+                    that trade and what it cost me than a case study claiming I got it all right.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="wrap">
+            <hr class="rule" style="margin-bottom: 2rem;">
+            <div style="display:flex; flex-wrap:wrap; gap:0.7rem; align-items:center; justify-content:space-between;">
+                <div>
+                    <p class="label plain" style="margin-bottom:0.6rem;">Stack</p>
+                    <ul class="stack">
+                        <li>React</li><li>Node.js</li><li>Express</li><li>PostgreSQL</li><li>Prisma ORM</li><li>JWT</li><li>Docker</li><li>Vercel</li>
+                    </ul>
+                </div>
+                <div style="display:flex; gap:0.7rem; flex-wrap:wrap;">
+                    <a class="btn" href="stock-pipeline.html">← Previous</a>
+                    <a class="btn btn-solid" href="https://freightswipe.vercel.app" target="_blank" rel="noopener">Open FreightSwipe ↗</a>
+                    <a class="btn" href="about.html#contact">Get in touch</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="wrap">
+            <p>© <span id="year">2026</span> Kabir Kenth — Brampton, ON</p>
+            <div class="footer-links">
+                <a href="https://github.com/KabirKenth" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://linkedin.com/in/kabirkenth" target="_blank" rel="noopener">LinkedIn</a>
+                <a href="mailto:kabirkenth@outlook.com">Email</a>
+                <a href="Kabir-Kenth-Resume.pdf">Résumé</a>
+            </div>
+        </div>
+    </footer>
+    <script src="main.js"></script>
+    <script src="interactive.js"></script>
+</body>
+</html>

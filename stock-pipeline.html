@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Sentiment Pipeline — Case Study — Kabir Kenth</title>
+    <meta name="description" content="A daily containerized ELT pipeline: Airflow into BigQuery with idempotent loads, Gemini sentiment scoring, a Random Forest signal, and a Looker Studio dashboard tracking its own accuracy.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <a href="#main" class="skip">Skip to content</a>
+
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-mark">kabirkenth<span class="tld">.me</span></a>
+            <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">Menu</button>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="work.html" aria-current="page">Work</a>
+                <a href="about.html">About</a>
+                <a href="about.html#contact">Contact</a>
+                <a href="Kabir-Kenth-Resume.pdf" class="btn">Résumé</a>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main">
+
+    <header class="page-head">
+        <div class="wrap">
+            <a href="work.html" class="back">← All work</a>
+            <p class="label">Case study 02</p>
+            <h1>Market Sentiment Pipeline</h1>
+            <div class="meta-line">
+                <span class="status status-live">Running daily</span>
+                <span class="year">2026</span>
+            </div>
+            <p class="lede">
+                A containerized ELT pipeline that turns unstructured financial news into a quantified signal
+                for S&amp;P 500 equities — and then <strong>grades its own predictions</strong> on a dashboard
+                so the model can't quietly get worse.
+            </p>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="wrap">
+            <div class="prose">
+                <h3>The problem I was actually solving</h3>
+                <p>
+                    Price data is structured and easy. News is neither, and it's where the information
+                    actually lives. I wanted a system that reads the day's news for a few hundred tickers,
+                    turns it into something a model can consume, and produces a signal on a fixed schedule
+                    without me touching it.
+                </p>
+                <p>
+                    The hard part in a daily pipeline is never the model. It's what happens the third time
+                    a task reruns.
+                </p>
+
+                <div class="callout">
+                    <span class="callout-k">The constraint everything else follows from</span>
+                    <p>
+                        A pipeline that runs every day will fail, get retried, and get backfilled. If a rerun
+                        can double-count a row, every downstream number is quietly wrong and nothing alerts you.
+                        So loads had to be idempotent before anything else was worth building.
+                    </p>
+                </div>
+
+                <h3>Architecture</h3>
+            </div>
+
+            <figure class="diagram reveal" data-flow="pipeline">
+                <svg viewBox="0 0 940 350" role="img" aria-labelledby="d2title d2desc">
+                    <title id="d2title">Market sentiment pipeline architecture</title>
+                    <desc id="d2desc">Market data and news feeds are extracted by a daily containerized Airflow DAG, merged idempotently into BigQuery raw tables, scored for sentiment by Gemini, turned into features for a Random Forest, and surfaced with tracked accuracy in Looker Studio.</desc>
+
+                    <!-- sources -->
+                    <text class="d-t-group" x="8" y="40">Sources</text>
+                    <rect class="d-box" x="8" y="52"  width="122" height="46" rx="4"/>
+                    <rect class="d-box" x="8" y="110" width="122" height="46" rx="4"/>
+                    <text class="d-t"    x="69" y="72"  text-anchor="middle">Market data</text>
+                    <text class="d-t-sm" x="69" y="88"  text-anchor="middle">daily OHLCV</text>
+                    <text class="d-t"    x="69" y="130" text-anchor="middle">News feed</text>
+                    <text class="d-t-sm" x="69" y="146" text-anchor="middle">unstructured text</text>
+
+                    <!-- airflow group -->
+                    <rect class="d-group" x="160" y="26" width="580" height="152" rx="5"/>
+                    <text class="d-t-group" x="176" y="46">Airflow DAG — daily · containerized with Docker</text>
+
+                    <rect class="d-box" data-node="extract"        x="176" y="60" width="122" height="52" rx="4"/>
+                    <rect class="d-box-accent" data-node="load" x="318" y="60" width="122" height="52" rx="4"/>
+                    <rect class="d-box" data-node="score"        x="460" y="60" width="122" height="52" rx="4"/>
+                    <rect class="d-box" data-node="predict"        x="602" y="60" width="122" height="52" rx="4"/>
+
+                    <text class="d-t"    x="237" y="82"  text-anchor="middle">Extract</text>
+                    <text class="d-t-sm" x="237" y="98"  text-anchor="middle">pull + normalize</text>
+
+                    <text class="d-t"        x="379" y="82"  text-anchor="middle">Load</text>
+                    <text class="d-t-accent" x="379" y="98"  text-anchor="middle">MERGE, not INSERT</text>
+
+                    <text class="d-t"    x="521" y="82"  text-anchor="middle">Score</text>
+                    <text class="d-t-sm" x="521" y="98"  text-anchor="middle">Gemini → sentiment</text>
+
+                    <text class="d-t"    x="663" y="82"  text-anchor="middle">Predict</text>
+                    <text class="d-t-sm" x="663" y="98"  text-anchor="middle">Random Forest</text>
+
+                    <g class="d-line">
+                        <path d="M298 86 H312"/><path d="M440 86 H454"/><path d="M582 86 H596"/>
+                        <path d="M130 75 H170 V86 H170"/>
+                        <path d="M130 133 H150 V86 H170"/>
+                    </g>
+                    <g fill="var(--edge-hi)">
+                        <path d="M312 86 l-6 -3.5 v7 z"/><path d="M454 86 l-6 -3.5 v7 z"/>
+                        <path d="M596 86 l-6 -3.5 v7 z"/><path d="M176 86 l-6 -3.5 v7 z"/>
+                    </g>
+
+                    <text class="d-t-sm" x="379" y="136" text-anchor="middle">keyed on (ticker, date)</text>
+                    <text class="d-t-sm" x="379" y="152" text-anchor="middle">rerun-safe by construction</text>
+
+                    <!-- bigquery -->
+                    <rect class="d-group" x="160" y="206" width="580" height="86" rx="5"/>
+                    <text class="d-t-group" x="176" y="226">BigQuery — serverless warehouse</text>
+
+                    <rect class="d-box" x="176" y="236" width="164" height="42" rx="3"/>
+                    <rect class="d-box" x="356" y="236" width="164" height="42" rx="3"/>
+                    <rect class="d-box-accent" data-node="predictions" x="536" y="236" width="188" height="42" rx="3"/>
+                    <text class="d-t-sm" x="258" y="262" text-anchor="middle">raw_prices · raw_news</text>
+                    <text class="d-t-sm" x="438" y="262" text-anchor="middle">features · sentiment</text>
+                    <text class="d-t-sm" x="630" y="262" text-anchor="middle">predictions · outcomes</text>
+
+                    <g class="d-line-dash">
+                        <path d="M258 112 V236"/><path d="M438 112 V236"/><path d="M663 112 V236"/>
+                    </g>
+
+                    <!-- looker -->
+                    <rect class="d-box" data-node="looker" x="790" y="216" width="140" height="62" rx="4"/>
+                    <text class="d-t"    x="860" y="242" text-anchor="middle">Looker Studio</text>
+                    <text class="d-t-sm" x="860" y="260" text-anchor="middle">signals + accuracy</text>
+                    <path class="d-line-accent" d="M724 257 H784"/>
+                    <path d="M784 257 l-6 -3.5 v7 z" fill="var(--amber)"/>
+
+                    <!-- feedback loop -->
+                    <path class="d-line-dash" d="M860 216 V196 H663 V112"/>
+                    <path d="M663 112 l-3.5 6 h7 z" fill="var(--bone-mut)"/>
+                    <text class="d-t-sm" x="770" y="190" text-anchor="middle">measured outcomes feed back into evaluation</text>
+                </svg>
+                <div class="flow-controls">
+                    <span class="flow-status" data-flow-status>Watching one daily run…</span>
+                    <div class="flow-actions">
+                        <button class="btn" data-act="replay">Re-run</button>
+                    </div>
+                </div>
+                <figcaption>
+                    The loop is the point: predictions are written next to the outcomes they're later graded
+                    against, so the dashboard shows whether the model is still earning its place. Re-run it —
+                    nothing downstream changes, which is the whole argument below.
+                </figcaption>
+            </figure>
+
+            <div class="prose">
+                <h3>Why the merge matters — try it</h3>
+                <p>
+                    This is the least glamorous decision in the project and the one everything else depends on.
+                    Both tables below receive the same day's data. One appends, one merges on
+                    <strong>(ticker, date)</strong>. Press <em>Run the same day again</em> — which is what a
+                    retry, a backfill or a scheduler hiccup does — and watch them stop agreeing.
+                </p>
+            </div>
+
+            <div class="widget reveal" data-widget="idempotency">
+                <div class="widget-head">
+                    <h4>Same input, twice</h4>
+                    <div class="widget-actions">
+                        <button class="btn btn-solid" data-act="run">Run the same day again</button>
+                        <button class="btn" data-act="reset">Reset</button>
+                    </div>
+                </div>
+                <div class="idem-cols">
+                    <div class="idem-col">
+                        <h5>INSERT — append</h5>
+                        <p class="sub">what most pipelines do</p>
+                        <ul data-rows="append"></ul>
+                    </div>
+                    <div class="idem-col">
+                        <h5>MERGE — upsert on (ticker, date)</h5>
+                        <p class="sub">what this one does</p>
+                        <ul data-rows="merge"></ul>
+                    </div>
+                </div>
+                <div class="idem-tally">
+                    <span>append rows: <b data-count="append">0</b></span>
+                    <span>merge rows: <b data-count="merge">0</b></span>
+                    <span class="bad">phantom rows: <b data-dupes>0</b></span>
+                </div>
+                <p class="idem-note" data-idem-note></p>
+            </div>
+
+            <div class="live-status reveal" data-live-status="pipeline-status.json" hidden>
+                <p class="live-head"><span class="live-dot" aria-hidden="true"></span> Live from the running pipeline</p>
+                <dl class="live-grid">
+                    <div><dt>Last run</dt><dd data-live="when">—</dd></div>
+                    <div><dt>Rows loaded</dt><dd data-live="rows">—</dd></div>
+                    <div><dt>Tickers</dt><dd data-live="tickers">—</dd></div>
+                    <div><dt>Status</dt><dd><span class="live-pill" data-live="state">—</span></dd></div>
+                </dl>
+            </div>
+
+            <div class="prose">
+                <h3>Decisions and what they cost</h3>
+            </div>
+
+            <div class="table-scroll">
+                <table class="decisions">
+                    <thead>
+                        <tr><th>Decision</th><th>Why</th><th>What it costs</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>MERGE on a natural key, not append</td>
+                            <td>Makes every task rerunnable and every backfill safe. A retry writes the same result as the first run.</td>
+                            <td>More expensive per load than a bare append, and it requires an honest natural key — which forces you to actually understand the grain of your data.</td>
+                        </tr>
+                        <tr>
+                            <td>ELT, not ETL</td>
+                            <td>Land raw text first, transform in the warehouse. When the sentiment prompt changes, I can reprocess history instead of re-fetching it from a rate-limited source.</td>
+                            <td>Storage cost for raw data I may never query, and transformation logic lives in SQL where it's harder to unit test.</td>
+                        </tr>
+                        <tr>
+                            <td>LLM for sentiment instead of a classical classifier</td>
+                            <td>Financial news is full of negation, hedging and sarcasm. A bag-of-words model reads "beats lowered expectations" as good news.</td>
+                            <td>Non-deterministic scoring, a per-row API cost, and an external dependency in the critical path. Scores are cached so a rerun doesn't re-bill.</td>
+                        </tr>
+                        <tr>
+                            <td>Random Forest over a neural model</td>
+                            <td>Small tabular dataset, and I wanted feature importances I could actually read and argue with.</td>
+                            <td>Almost certainly leaves accuracy on the table versus a gradient-boosted or sequence model.</td>
+                        </tr>
+                        <tr>
+                            <td>Airflow for something one cron could trigger</td>
+                            <td>The value isn't scheduling — it's per-task retries, dependency ordering, and being able to see which step failed at 4am without reading logs by hand.</td>
+                            <td>Real operational weight for a personal project. A cron plus a shell script would have shipped in a day.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="prose">
+                <div class="honest">
+                    <span class="callout-k">Where it stands, honestly</span>
+                    <ul>
+                        <li>The pipeline runs daily end to end and the dashboard is live.</li>
+                        <li><strong>This is not a trading strategy and I don't present it as one.</strong> It is a data engineering system that happens to produce a signal. I have not run it against transaction costs, slippage or a proper walk-forward backtest, so I make no claim about profitability.</li>
+                        <li>The model is retrained on a fixed cadence rather than triggered by measured drift.</li>
+                        <li>There is no alerting on task failure yet beyond Airflow's own UI — the next thing I'd add.</li>
+                    </ul>
+                </div>
+
+                <h3>What I'd tell you in an interview</h3>
+                <p>
+                    Ask me about the idempotency work. It's the least glamorous part and the part that makes
+                    the difference between a pipeline you can trust and a demo. I'd also rather talk about why
+                    the predictions table sits next to an outcomes table than about the model itself — a
+                    system that can't tell you when it's wrong isn't finished.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="wrap">
+            <hr class="rule" style="margin-bottom: 2rem;">
+            <div style="display:flex; flex-wrap:wrap; gap:0.7rem; align-items:center; justify-content:space-between;">
+                <div>
+                    <p class="label plain" style="margin-bottom:0.6rem;">Stack</p>
+                    <ul class="stack">
+                        <li>Python</li><li>Apache Airflow</li><li>Docker</li><li>Google BigQuery</li><li>Gemini</li><li>scikit-learn</li><li>Looker Studio</li><li>GCP</li>
+                    </ul>
+                </div>
+                <div style="display:flex; gap:0.7rem; flex-wrap:wrap;">
+                    <a class="btn" href="applytron.html">← Previous</a>
+                    <a class="btn" href="freightswipe.html">Next case study →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="wrap">
+            <p>© <span id="year">2026</span> Kabir Kenth — Brampton, ON</p>
+            <div class="footer-links">
+                <a href="https://github.com/KabirKenth" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://linkedin.com/in/kabirkenth" target="_blank" rel="noopener">LinkedIn</a>
+                <a href="mailto:kabirkenth@outlook.com">Email</a>
+                <a href="Kabir-Kenth-Resume.pdf">Résumé</a>
+            </div>
+        </div>
+    </footer>
+    <script src="main.js"></script>
+    <script src="interactive.js"></script>
+</body>
+</html>
