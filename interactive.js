@@ -107,7 +107,7 @@
             await wait(450);
 
             await travel(tok, [X.listings, Y], [X.ingest, Y], 620);
-            stage('ingest', 'Nightly ingest — deduping against what we already have');
+            stage('ingest', 'Ingesting your search — deduping against what we already have');
             await wait(520);
 
             var rejected = false;
@@ -118,7 +118,7 @@
                     await wait(600);
                     await travel(tok, [X.score, Y], [X.generate, Y], 620);
                 } else {
-                    stage('generate', 'Regenerating with your edits…');
+                    stage('generate', 'Re-rendering with your edits…');
                     await wait(650);
                 }
                 stage('generate', 'Rendering an ATS-safe PDF…');
@@ -137,7 +137,7 @@
 
                 if (decision === 'reject') {
                     rejected = true;
-                    say('Rejected — looping back to regenerate.', 'warn');
+                    say('Sent back — editing the documents before approval.', 'warn');
                     n.gate.classList.remove('n-active');
                     await path(tok, [[X.gate, Y], [X.gate - 15, 190], [X.generate, 190], [X.generate, Y]], 420);
                 } else {
@@ -148,7 +148,7 @@
             n.gate.classList.remove('n-active'); n.gate.classList.add('n-done');
             await travel(tok, [X.gate, Y], [X.submit, Y], 700);
             n.submit.classList.add('n-active');
-            say('Approved and submitted — with a screenshot captured for review.', 'ok');
+            say('Approved. Submitted if the form is on a recognised ATS — otherwise filled in and screenshotted for you.', 'ok');
             await wait(400);
             tok.classList.remove('on');
             running = false;
@@ -343,15 +343,24 @@
         var MACHINE = {
             ingested:  { label: 'ingested',   next: [['score', 'scored']] },
             scored:    { label: 'scored',     next: [['generate documents', 'generated']] },
-            generated: { label: 'generated',  next: [['send for approval', 'awaiting_approval']] },
-            awaiting_approval: { label: 'awaiting approval', gate: true,
-                                 next: [['approve', 'approved'], ['reject', 'generated']] },
-            approved:  { label: 'approved',   next: [['submit', 'submitted'], ['submission fails', 'approved_failed']] },
-            approved_failed: { label: 'approved · submission failed', warn: true,
-                               next: [['retry submit', 'submitted']] },
-            submitted: { label: 'submitted', terminal: true, next: [] }
+            generated: { label: 'generated',  next: [['send for approval', 'pending_approval']] },
+            pending_approval: { label: 'pending_approval', gate: true,
+                                 next: [['edit documents', 'pending_approval'],
+                                        ['approve', 'approved'],
+                                        ['reject', 'rejected']] },
+            rejected:  { label: 'rejected', warn: true, terminal: true, next: [] },
+            // The worker claims a row with a conditional update from 'approved'.
+            // A second worker reaching for the same row updates nothing.
+            approved:  { label: 'approved',   next: [['worker claims row', 'applying']] },
+            applying:  { label: 'applying',
+                         next: [['confirmation on page', 'applied'],
+                                ['no confirmation / untrusted host', 'manual_needed'],
+                                ['worker restarts — requeue', 'approved']] },
+            manual_needed: { label: 'manual_needed', warn: true,
+                             next: [['paste real apply URL', 'approved']] },
+            applied:   { label: 'applied', terminal: true, next: [] }
         };
-        var ORDER = ['ingested', 'scored', 'generated', 'awaiting_approval', 'approved', 'submitted'];
+        var ORDER = ['ingested', 'scored', 'generated', 'pending_approval', 'approved', 'applying', 'applied'];
 
         var state = 'ingested';
         var track = root.querySelector('[data-sm-track]');
@@ -363,9 +372,12 @@
             track.innerHTML = '';
             ORDER.forEach(function (k) {
                 var li = document.createElement('li');
-                var isNow = (k === state) || (state === 'approved_failed' && k === 'approved');
+                // Off-track states (rejected, manual_needed) highlight the step they sit beside.
+                var anchor = state === 'rejected' ? 'pending_approval'
+                           : state === 'manual_needed' ? 'applying' : state;
+                var isNow = (k === state) || (k === anchor);
                 li.className = 'sm-node' + (isNow ? ' is-now' : '') +
-                    (ORDER.indexOf(k) < ORDER.indexOf(state === 'approved_failed' ? 'approved' : state) ? ' is-past' : '') +
+                    (ORDER.indexOf(k) < ORDER.indexOf(anchor) ? ' is-past' : '') +
                     (MACHINE[k] && MACHINE[k].gate ? ' is-gate' : '');
                 li.textContent = MACHINE[k].label;
                 track.appendChild(li);
@@ -376,7 +388,9 @@
             if (s.terminal) {
                 var done = document.createElement('p');
                 done.className = 'sm-done';
-                done.textContent = 'Terminal state. There is no transition out of submitted — which is the point.';
+                done.textContent = state === 'rejected'
+                    ? 'Terminal state. A rejected document is not editable back into the pipeline \u2014 you start a new one.'
+                    : 'Terminal state. There is no transition out of applied \u2014 which is the point.';
                 acts.appendChild(done);
             }
             s.next.forEach(function (pair) {

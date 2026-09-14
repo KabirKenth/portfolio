@@ -80,11 +80,11 @@
             <figure class="diagram reveal" data-flow="applytron">
                 <svg viewBox="0 0 940 300" role="img" aria-labelledby="d1title d1desc">
                     <title id="d1title">ApplyTron system architecture</title>
-                    <desc id="d1desc">Job listings flow from Adzuna through a nightly ingest task into Postgres, are scored by the Claude API, rendered into PDFs, then held at a human approval gate delivered by email before a Playwright worker submits them.</desc>
+                    <desc id="d1desc">Job listings flow from Adzuna through an on-demand ingest into Postgres, are scored against the candidate by Claude Haiku on a weighted rubric, rendered into PDFs, then held at a human approval gate delivered by email before a Playwright worker submits them to recognised applicant tracking systems.</desc>
 
                     <!-- platform labels -->
                     <text class="d-t-sm" x="73"  y="80" text-anchor="middle">adzuna</text>
-                    <text class="d-t-sm" x="231" y="80" text-anchor="middle">trigger.dev</text>
+                    <text class="d-t-sm" x="231" y="80" text-anchor="middle">vercel</text>
                     <text class="d-t-sm" x="389" y="80" text-anchor="middle">anthropic</text>
                     <text class="d-t-sm" x="547" y="80" text-anchor="middle">vercel</text>
                     <text class="d-t-accent" x="705" y="80" text-anchor="middle">resend → you</text>
@@ -102,10 +102,10 @@
                     <text class="d-t-sm" x="73"  y="136" text-anchor="middle">job feed API</text>
 
                     <text class="d-t"    x="231" y="118" text-anchor="middle">Ingest</text>
-                    <text class="d-t-sm" x="231" y="136" text-anchor="middle">nightly, deduped</text>
+                    <text class="d-t-sm" x="231" y="136" text-anchor="middle">on demand, deduped</text>
 
                     <text class="d-t"    x="389" y="118" text-anchor="middle">Score</text>
-                    <text class="d-t-sm" x="389" y="136" text-anchor="middle">Claude vs. resume</text>
+                    <text class="d-t-sm" x="389" y="136" text-anchor="middle">weighted rubric</text>
 
                     <text class="d-t"    x="547" y="118" text-anchor="middle">Generate</text>
                     <text class="d-t-sm" x="547" y="136" text-anchor="middle">react-pdf, ATS-safe</text>
@@ -115,7 +115,7 @@
                     <text class="d-t-sm"     x="705" y="149" text-anchor="middle">per document</text>
 
                     <text class="d-t"    x="863" y="118" text-anchor="middle">Submit</text>
-                    <text class="d-t-sm" x="863" y="136" text-anchor="middle">Playwright + shot</text>
+                    <text class="d-t-sm" x="863" y="136" text-anchor="middle">Playwright, ATS-only</text>
 
                     <!-- arrows -->
                     <g class="d-line">
@@ -136,7 +136,7 @@
                     <!-- reject / regenerate loop -->
                     <path class="d-line-dash" d="M690 158 V190 H547 V158"/>
                     <path d="M547 158 l-3.5 6 h7 z" fill="var(--bone-mut)"/>
-                    <text class="d-t-sm" x="618" y="204" text-anchor="middle">edit &amp; regenerate on reject</text>
+                    <text class="d-t-sm" x="618" y="204" text-anchor="middle">edit documents before approving</text>
 
                     <!-- persistence layer -->
                     <rect class="d-group" x="166" y="232" width="604" height="52" rx="4"/>
@@ -152,7 +152,7 @@
                     <span class="flow-status" data-flow-status>Watching a single application move through the pipeline…</span>
                     <div class="flow-actions">
                         <button class="btn btn-solid" data-act="approve" disabled>Approve</button>
-                        <button class="btn" data-act="reject" disabled>Reject</button>
+                        <button class="btn" data-act="reject" disabled>Send back to edit</button>
                         <button class="btn" data-act="replay">Replay</button>
                     </div>
                 </div>
@@ -187,6 +187,54 @@
             </div>
 
             <div class="prose">
+                <h3>The unglamorous problem: aggregator links go nowhere</h3>
+                <p>
+                    A job feed gives you a redirect URL, and that URL usually lands on the aggregator's own
+                    interstitial rather than the employer's form. A browser automation pointed at it fills in
+                    nothing useful. So at ingestion the system tries to find the real posting: it derives a
+                    likely company slug and asks the public job-board APIs that Greenhouse, Lever and Ashby
+                    expose, in parallel, matching on the role. A hit is stored as the listing's apply URL and
+                    preferred over the feed's link from then on; a miss just leaves the original.
+                </p>
+                <p>
+                    It is the least interesting code in the repository and it moved the success rate more
+                    than any prompt I have written. A resolved URL is also not a trusted one — the same field
+                    can be pasted in by hand on a listing that needs manual attention, which is why the host
+                    allowlist is checked again at submission time rather than inherited from here.
+                </p>
+
+                <h3>Three closed loops</h3>
+                <p>
+                    A single model call is an open loop: whatever comes back is what ships. Three places in
+                    this system close that loop, and they are unrelated mechanisms &mdash; the temptation to
+                    fold them into one &ldquo;retry helper&rdquo; is the mistake I expect to be tempted by later.
+                </p>
+
+                <div class="table-scroll">
+                    <table class="decisions">
+                        <thead>
+                            <tr><th>Loop</th><th>What closes it</th><th>Where it stops</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Generate &rarr; verify &rarr; regenerate</td>
+                                <td>Output with a contract &mdash; a JSON shape, a 250-word ceiling on the cover letter, a list of banned phrases, an employer name that has to appear verbatim in my own resume before the model is allowed to claim it &mdash; is checked by <em>pure functions</em>, never by a second model call grading the first. A failure is appended to the conversation as the assistant's turn plus a critique, which repairs far better than rebuilding the prompt.</td>
+                                <td>Bounded by attempts <em>and</em> cumulative output tokens, so a constraint the model can never satisfy cannot bill forever.</td>
+                            </tr>
+                            <tr>
+                                <td>Employer questions</td>
+                                <td>ATS forms reveal follow-up questions as you fill them, so reading once is not enough: read what is still required, answer, fill, read again.</td>
+                                <td>Only facts I have actually stated. An answer it cannot ground stays blank and blocks submission &mdash; an invented work-authorisation answer is a misrepresentation on a real application, not a UX papercut.</td>
+                            </tr>
+                            <tr>
+                                <td>Queue retry</td>
+                                <td>A navigation timeout is not the same failure as a form the worker cannot read. Transient ones go back in the queue with exponential backoff and jitter.</td>
+                                <td>Four attempts, and classification defaults to permanent. Jitter matters even with one worker: a restart requeues every in-flight row at once, and without spread they all re-hit the same ATS in the same second.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
                 <h3>Decisions and what they cost</h3>
             </div>
 
@@ -202,9 +250,24 @@
                             <td>It is no longer "fire and forget". Throughput is capped by how often the user checks email.</td>
                         </tr>
                         <tr>
-                            <td>Claude Haiku for scoring</td>
-                            <td>Scoring runs across every ingested listing nightly. The cheap model is accurate enough for a ranking decision and keeps per-run cost viable.</td>
-                            <td>Weaker on nuanced role fit than a larger model. Mitigated by only using the score to rank, never to reject outright.</td>
+                            <td>Weighted sub-scores, not one holistic number</td>
+                            <td>Asked for a single 0&ndash;100 fit score, the model clusters on attractor values &mdash; 70, 72, 78 &mdash; and stops discriminating. So it grades five narrow criteria instead (required skills, title, experience level, domain, logistics), each with evidence, and the percentage is computed in code from fixed weights.</td>
+                            <td>More output tokens per listing, and the weights are my judgement rather than anything fitted to data.</td>
+                        </tr>
+                        <tr>
+                            <td>Claude Haiku rather than a larger model</td>
+                            <td>Scoring fans out across every listing in a run. The cheap model is accurate enough for a ranking decision once the rubric does the structuring, and it keeps a run affordable.</td>
+                            <td>Weaker on nuanced role fit. Mitigated by only using the score to rank, never to reject outright.</td>
+                        </tr>
+                        <tr>
+                            <td>Auto-submit gated on a host allowlist</td>
+                            <td>The document that reaches a submit button may have come from a URL the user pasted. Recognising the destination as Greenhouse, Lever or Ashby is what separates &ldquo;a form I understand&rdquo; from &ldquo;an arbitrary page on the internet&rdquo;, and it is checked at the moment of submission, not at ingestion.</td>
+                            <td>Most employers are on neither, so most applications stop at a screenshot and get finished by hand.</td>
+                        </tr>
+                        <tr>
+                            <td>Pure-code checks, not a model grading a model</td>
+                            <td>An LLM judge is another open loop &mdash; it fails in the same ways as the thing it is checking, and it costs a second call on every generation. A word count, a banned-phrase scan and a grounding check against the source resume are all deterministic, so they are ordinary functions with ordinary unit tests.</td>
+                            <td>Only catches what I thought to encode. It cannot tell me the writing is bad, only that it broke a rule.</td>
                         </tr>
                         <tr>
                             <td>Row-level security in Postgres</td>
@@ -229,9 +292,11 @@
                 <div class="honest">
                     <span class="callout-k">Where it stands, honestly</span>
                     <ul>
-                        <li>Auth, ingest, scoring, document generation and the approval flow are live and multi-user today.</li>
-                        <li>Automated submission works against standard form-based application pages. It does not attempt Workday or Greenhouse-style multi-step flows yet — those need per-ATS adapters, which is the next piece of work.</li>
-                        <li>There is no retry queue with backoff on the worker yet; a failed submission surfaces to the user rather than self-healing.</li>
+                        <li>Auth (email and Google), ingest, scoring, document generation and the approval flow are live and multi-user today.</li>
+                        <li>Submission is off unless the operator sets <code>AUTO_SUBMIT=true</code>, and even then it only clicks submit when the landing page is a recognised Greenhouse, Lever or Ashby host. Everything else &mdash; including Workday &mdash; stops at a filled-in form and a screenshot for me to finish by hand.</li>
+                        <li>Employer-specific required questions &mdash; work authorisation, visa status, education &mdash; are answered by a loop that reads the form, answers from my own stated facts, fills, and reads again. A field it cannot ground in something I actually said stays blank, blocks auto-submit, and gets named in the failure reason.</li>
+                        <li>The worker still only fills what a generic selector heuristic finds. Per-ATS field adapters &mdash; Greenhouse, Lever and Workday field IDs &mdash; are the next piece of work if hit rate starts to matter.</li>
+                        <li>Transient failures back off and retry (four attempts, one minute to thirty). Anything not recognised as transient is treated as permanent and handed to me, because a wrong &ldquo;retry&rdquo; verdict costs forty-five minutes of silence before I'm told to apply by hand.</li>
                         <li>Scoring quality has not been measured against a labelled set. I can tell you it ranks sensibly; I cannot yet tell you its precision, and I would rather say that than quote a number I made up.</li>
                     </ul>
                 </div>
@@ -239,10 +304,20 @@
                 <h3>What I'd tell you in an interview</h3>
                 <p>
                     The interesting engineering here isn't the LLM call — it's the state machine around it.
-                    A document moves through <em>ingested → scored → generated → awaiting approval → approved
-                    → submitted</em>, and every transition is guarded, because the whole value of the system
-                    is that it cannot skip a step. Getting that right, including what happens when a user
-                    approves a document and then the submission fails, was most of the work.
+                    A document moves through <em>ingested → scored → generated → pending_approval → approved
+                    → applying → applied</em>, and every transition is a conditional update that names the
+                    status it expects to be moving <em>from</em>. If the row is not in that state the write
+                    affects nothing and the caller backs off, so two browser tabs and the worker can all
+                    reach for the same application without one of them winning twice.
+                </p>
+                <p>
+                    That matters most at the <code>approved → applying</code> step, which is how the worker
+                    claims a row. The cost of getting it wrong is not a confusing UI — it is the same
+                    application submitted to the same employer twice. For the same reason the submit click
+                    is the last thing <code>attemptApply</code> does: the queue cannot distinguish a click
+                    that failed from one that succeeded and got lost, so nothing that could throw is allowed
+                    to run after it. When the worker restarts mid-flight it requeues anything stranded in
+                    <em>applying</em> back to <em>approved</em> rather than assuming either outcome.
                 </p>
             </div>
         </div>
@@ -255,7 +330,7 @@
                 <div>
                     <p class="label plain" style="margin-bottom:0.6rem;">Stack</p>
                     <ul class="stack">
-                        <li>Next.js</li><li>TypeScript</li><li>Supabase</li><li>PostgreSQL</li><li>Claude API</li><li>react-pdf</li><li>Resend</li><li>Trigger.dev</li><li>Playwright</li><li>Railway</li><li>Docker</li>
+                        <li>Next.js</li><li>TypeScript</li><li>Supabase</li><li>PostgreSQL</li><li>Claude API</li><li>react-pdf</li><li>Resend</li><li>Playwright</li><li>Railway</li><li>Docker</li><li>Vitest</li>
                     </ul>
                 </div>
                 <div style="display:flex; gap:0.7rem; flex-wrap:wrap;">
