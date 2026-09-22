@@ -1,0 +1,14 @@
+{
+  // Cmd+Shift+B in VS Code rebuilds the resume PDF.
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build resume PDF",
+      "type": "shell",
+      "command": "sh resume/build.sh",
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always", "clear": true },
+      "problemMatcher": []
+    }
+  ]
+}

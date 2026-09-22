@@ -7,3 +7,7 @@
 # Local working notes and scratch
 NEXT-STEPS.md
 _to_delete/
+
+# Python environment for building the resume (created by resume/build.sh)
+.venv/
+__pycache__/
