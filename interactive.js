@@ -179,12 +179,12 @@
         var running = false;
 
         var steps = [
-            { at: [237, 86], node: 'extract', text: 'Pulling prices and news for the day…' },
-            { at: [379, 86], node: 'load', text: 'MERGE on (ticker, date) — a re-run overwrites, never appends' },
-            { at: [521, 86], node: 'score', text: 'Gemini turning headlines into sentiment scores…' },
-            { at: [663, 86], node: 'predict', text: 'Random Forest reading the scores…' },
-            { at: [630, 257], node: 'predictions', text: 'Predictions written beside the outcomes they get graded against' },
-            { at: [860, 247], node: 'looker', text: 'Dashboard updated — including how wrong yesterday was' }
+            { at: [237, 86], node: 'extract', text: 'Pulling two years of prices and today\u2019s headlines\u2026' },
+            { at: [379, 86], node: 'load', text: 'Upsert on (symbol, date): rows that didn\u2019t change aren\u2019t touched' },
+            { at: [521, 86], node: 'score', text: 'Gemini scoring the headlines (skipped if this session is already scored)\u2026' },
+            { at: [663, 86], node: 'predict', text: 'Random Forest making the next-session call\u2026' },
+            { at: [630, 257], node: 'predictions', text: 'Call stored. A SQL view grades it once the next close lands' },
+            { at: [860, 247], node: 'dashboard', text: 'Dashboard updated, including whether yesterday\u2019s call was right' }
         ];
 
         async function run() {
@@ -204,14 +204,14 @@
                 status.className = 'flow-status' + (s.node === 'load' ? ' is-hold' : ' is-work');
                 await wait(680);
             }
-            status.textContent = 'Run complete. Re-run it — the row count will not move.';
+            status.textContent = 'Run complete. Re-run it: rows changed = 0.';
             status.className = 'flow-status is-ok';
             tok.classList.remove('on');
             running = false;
         }
 
         bReplay.addEventListener('click', function () { if (!running) run(); });
-        if (reduce) { status.textContent = 'Daily run: extract → merge → score → predict → dashboard.'; return; }
+        if (reduce) { status.textContent = 'Daily run: extract → upsert → score → predict → dashboard.'; return; }
         var seen = false;
         new IntersectionObserver(function (es) {
             es.forEach(function (e) { if (e.isIntersecting && !seen) { seen = true; run(); } });
@@ -320,7 +320,7 @@
             note.textContent = runs === 1
                 ? 'One run each. Identical so far — this is where most pipelines stop testing.'
                 : 'Run ' + runs + ' of the same day. Append has ' + (appendRows.length - mergeRows.length) +
-                  ' phantom rows; every average computed downstream is now wrong. Merge is unchanged.';
+                  ' phantom rows; every average computed downstream is now wrong. Upsert is unchanged.';
             root.classList.toggle('diverged', runs > 1);
         }
 

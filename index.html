@@ -42,7 +42,7 @@
                     <p class="lede reveal">
                         Software engineer in Brampton, Ontario. Three systems shipped end to end —
                         a <strong>live LLM application platform</strong> that won't submit anything without
-                        human sign-off, a daily <strong>Airflow → BigQuery</strong> pipeline built so a rerun
+                        human sign-off, a weekday <strong>news-sentiment pipeline</strong> built so a rerun
                         can't double-count, and a two-sided logistics prototype. B.Eng. Software Engineering,
                         McMaster, November 2025.
                     </p>
@@ -62,8 +62,8 @@
                         <dd><strong>ApplyTron</strong> — live multi-user platform at app.kabirkenth.me</dd>
                     </div>
                     <div class="fact">
-                        <dt>Daily</dt>
-                        <dd>An <strong>Airflow → BigQuery → Gemini</strong> pipeline that runs without me</dd>
+                        <dt>Weekdays</dt>
+                        <dd>A <strong>Gemini news-sentiment pipeline</strong> that grades its own calls in public</dd>
                     </div>
                     <div class="fact">
                         <dt>Degree</dt>
@@ -102,15 +102,15 @@
                     <span class="work-num">02</span>
                     <span>
                         <span class="work-title">Market Sentiment Pipeline</span>
-                        <p class="work-sub">Daily ELT from news text to a tracked trading signal</p>
+                        <p class="work-sub">News sentiment to a graded next-session call, every weekday</p>
                     </span>
                     <span>
                         <span class="meta-line">
-                            <span class="status status-live">Running daily</span>
+                            <span class="status status-live">Live dashboard</span>
                             <span class="year">2026</span>
                         </span>
-                        <p class="work-note">Airflow on Docker into BigQuery, with idempotent loads so a rerun can never double-count. Gemini scores the news; a Random Forest reads the scores.</p>
-                        <ul class="stack"><li>Airflow</li><li>BigQuery</li><li>Gemini</li><li>Docker</li></ul>
+                        <p class="work-note">A Railway cron upserts prices and headlines into Supabase, so a rerun can't double-count. Gemini scores the news, a Random Forest makes the call, and a live dashboard grades it.</p>
+                        <ul class="stack"><li>Python</li><li>Supabase</li><li>Gemini</li><li>Railway</li><li>Vercel</li></ul>
                     </span>
                     <span class="work-go">Case study →</span>
                 </a>
@@ -165,7 +165,7 @@
                         </p>
                         <p>
                             That's where the headline comes from. ApplyTron won't send a document until a person
-                            approves it. The market pipeline merges instead of appends so a retry can't
+                            approves it. The market pipeline upserts instead of appending, so a retry can't
                             double-count. Both are built so nobody has to do what I spent a decade doing.
                         </p>
                         <p><a href="about.html">The longer version, with dates →</a></p>

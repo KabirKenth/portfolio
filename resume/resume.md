@@ -15,7 +15,7 @@ Brampton, ON | kabirkenth@outlook.com | (647) 970-8110
 kabirkenth.me | linkedin.com/in/kabirkenth | github.com/KabirKenth
 
 Software engineer, McMaster B.Eng. (Nov 2025). Three systems I built run in production: an LLM
-job-application platform, a daily Airflow and BigQuery pipeline, and a two-sided freight marketplace.
+job-application platform, a weekday news-sentiment pipeline, and a two-sided freight marketplace.
 Years of bookkeeping and freight dispatch came first, which is why I build tools that take manual
 re-entry out of a process.
 
@@ -47,11 +47,11 @@ Live at app.kabirkenth.me | 2026 | Next.js, TypeScript, Supabase, Claude API, Pl
 - No document reaches an employer without a person approving it first. The gate is a guarded state machine sitting behind row-level security in Postgres.
 - A Playwright worker on Railway fills and submits application forms, screenshotting each one for review before it submits. Vitest covers the security boundaries and the business rules.
 
-**Market Sentiment Pipeline: Daily ELT and Signal**
-2026 | Python, Apache Airflow, BigQuery, Gemini, Docker, Looker Studio
-- A containerised Airflow DAG pulls market data and financial news for S&P 500 equities every day.
-- Reruns and backfills cannot double-count. Loads merge into BigQuery on a natural (ticker, date) key rather than appending.
-- Gemini turns the news into sentiment scores that feed a Random Forest model. Predictions are stored next to outcomes, so accuracy stays visible in Looker Studio.
+**Market Sentiment Pipeline: News Sentiment and Graded Signals**
+Live at market-sentiment-pipeline.vercel.app | 2026 | Python, PostgreSQL, Gemini, scikit-learn, Railway
+- A weekday Railway cron job pulls prices and headlines for five stocks and scores the news with Gemini.
+- Postgres upserts on natural keys skip unchanged rows, so a rerun changes 0 rows. Version one appended and double-counted.
+- A Random Forest calls the next session, a SQL view grades each call against the next close, and a public dashboard shows the hit rate beside a naive baseline.
 
 **FreightSwipe: Two-Sided Freight Matching Platform**
 Live at freightswipe.vercel.app | 2025 - 2026 | React 19, Express, PostgreSQL, Prisma, Playwright, Vercel
@@ -74,6 +74,15 @@ McMaster University | Hamilton, ON | Graduated Nov 2025 | Algorithms, Data Struc
 ---
 
 ## Changelog
+
+### Sep 22 2026: market pipeline entry rewritten for the rebuilt version
+
+The pipeline was rebuilt and deployed, and the entry now describes exactly what that code does:
+five tickers, a Railway cron into Supabase Postgres with upserts that skip unchanged rows, Gemini
+sentiment, a Random Forest call, and a SQL view plus a public dashboard that grade every call.
+The live URL is in the header line, the way ApplyTron's and FreightSwipe's are. The stack line
+names what runs now (Airflow, BigQuery, Docker and Looker Studio came off it; Airflow and BigQuery
+stay under Skills). The summary now says "weekday news-sentiment pipeline".
 
 ### Sep 22 2026 — formatting pass
 

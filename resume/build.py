@@ -137,7 +137,7 @@ story.append(Rule(thickness=1.1, color=INK, space_before=3, space_after=3.5))
 # ---------- summary ----------
 story.append(Paragraph(
     "Software engineer, McMaster B.Eng. (Nov 2025). Three systems I built run in production: an LLM "
-    "job-application platform, a daily Airflow and BigQuery pipeline, and a two-sided freight marketplace. "
+    "job-application platform, a weekday news-sentiment pipeline, and a two-sided freight marketplace. "
     "Years of bookkeeping and freight dispatch came first, which is why I build tools that take manual "
     "re-entry out of a process.",
     SUMMARY))
@@ -183,13 +183,13 @@ story.append(b("No document reaches an employer without a person approving it fi
 story.append(b("A Playwright worker on Railway fills and submits application forms, screenshotting each one for "
                "review before it submits. Vitest covers the security boundaries and the business rules."))
 
-story += role("Market Sentiment Pipeline: Daily ELT and Signal",
-              "2026 | Python, Apache Airflow, BigQuery, Gemini, Docker, Looker Studio")
-story.append(b("A containerised Airflow DAG pulls market data and financial news for S&amp;P 500 equities every day."))
-story.append(b("Reruns and backfills cannot double-count. Loads merge into BigQuery on a natural (ticker, date) key "
-               "rather than appending."))
-story.append(b("Gemini turns the news into sentiment scores that feed a Random Forest model. Predictions are stored "
-               "next to outcomes, so accuracy stays visible in Looker Studio."))
+story += role("Market Sentiment Pipeline: News Sentiment and Graded Signals",
+              "Live at market-sentiment-pipeline.vercel.app | 2026 | Python, PostgreSQL, Gemini, scikit-learn, Railway")
+story.append(b("A weekday Railway cron job pulls prices and headlines for five stocks and scores the news with Gemini."))
+story.append(b("Postgres upserts on natural keys skip unchanged rows, so a rerun changes 0 rows. Version one "
+               "appended and double-counted."))
+story.append(b("A Random Forest calls the next session, a SQL view grades each call against the next close, and a "
+               "public dashboard shows the hit rate beside a naive baseline."))
 
 story += role("FreightSwipe: Two-Sided Freight Matching Platform",
               "Live at freightswipe.vercel.app | 2025 - 2026 | React 19, Express, PostgreSQL, Prisma, Playwright, Vercel")

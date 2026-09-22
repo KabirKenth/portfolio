@@ -65,15 +65,15 @@
                     <span class="work-num">02</span>
                     <span>
                         <span class="work-title">Market Sentiment Pipeline</span>
-                        <p class="work-sub">Daily ELT from news text to a tracked signal</p>
+                        <p class="work-sub">News sentiment to a graded next-session call, every weekday</p>
                     </span>
                     <span>
                         <span class="meta-line">
-                            <span class="status status-live">Running daily</span>
+                            <span class="status status-live">Live dashboard</span>
                             <span class="year">2026</span>
                         </span>
-                        <p class="work-note">Containerized Airflow into BigQuery with idempotent merges, Gemini sentiment scoring, a Random Forest signal, and a dashboard that grades the model's own predictions.</p>
-                        <ul class="stack"><li>Python</li><li>Airflow</li><li>BigQuery</li><li>Gemini</li><li>Docker</li><li>Looker Studio</li></ul>
+                        <p class="work-note">A Railway cron job upserts prices and headlines into Supabase Postgres on natural keys, so a rerun can't double-count. Gemini scores the news, a Random Forest calls the next session, and a public dashboard grades every call against what happened.</p>
+                        <ul class="stack"><li>Python</li><li>PostgreSQL</li><li>Supabase</li><li>Gemini</li><li>scikit-learn</li><li>Railway</li><li>Vercel</li></ul>
                     </span>
                     <span class="work-go">Case study →</span>
                 </a>
