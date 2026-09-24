@@ -181,7 +181,7 @@
         var steps = [
             { at: [237, 86], node: 'extract', text: 'Pulling two years of prices and today\u2019s headlines\u2026' },
             { at: [379, 86], node: 'load', text: 'Upsert on (symbol, date): rows that didn\u2019t change aren\u2019t touched' },
-            { at: [521, 86], node: 'score', text: 'Gemini scoring the headlines (skipped if this session is already scored)\u2026' },
+            { at: [521, 86], node: 'score', text: 'Claude scoring the headlines (skipped if this session is already scored)\u2026' },
             { at: [663, 86], node: 'predict', text: 'Random Forest making the next-session call\u2026' },
             { at: [630, 257], node: 'predictions', text: 'Call stored. A SQL view grades it once the next close lands' },
             { at: [860, 247], node: 'dashboard', text: 'Dashboard updated, including whether yesterday\u2019s call was right' }

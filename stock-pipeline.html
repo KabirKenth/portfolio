@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Market Sentiment Pipeline — Case Study — Kabir Kenth</title>
-    <meta name="description" content="A weekday pipeline for five large-cap stocks: a Railway cron job upserts prices and headlines into Supabase Postgres, Gemini scores the news, a Random Forest calls the next session, and a live Vercel dashboard grades every call.">
+    <meta name="description" content="A weekday pipeline for five large-cap stocks: a Railway cron job upserts prices and headlines into Supabase Postgres, Claude scores the news, a Random Forest calls the next session, and a live Vercel dashboard grades every call.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -55,7 +55,7 @@
                     <span class="callout-k">See it running</span>
                     <p>
                         The dashboard updates every weekday after the US close. It shows each ticker's latest
-                        call and confidence, the headlines Gemini read and its one-line reason, every past call
+                        call and confidence, the headlines the model read and its one-line reason, every past call
                         marked right or wrong, and a log of recent pipeline runs, including how many rows each one
                         actually changed.
                     </p>
@@ -71,7 +71,7 @@
                 </p>
                 <ul>
                     <li><strong>Extract.</strong> Two years of daily bars and the latest headlines per ticker from Yahoo Finance through <code>yfinance</code>, plus the article text wherever the publisher allows it to be fetched.</li>
-                    <li><strong>Score.</strong> One Gemini call per ticker turns that session's headlines into a score from −1 (bearish) to +1 (bullish) and a one-sentence reason.</li>
+                    <li><strong>Score.</strong> One Claude call per ticker turns that session's headlines into a score from −1 (bearish) to +1 (bullish) and a one-sentence reason.</li>
                     <li><strong>Predict.</strong> A Random Forest per ticker, retrained on every run using only sessions whose outcome is already known, calls the next session BUY, SELL or HOLD. It uses RSI, price against the 50-day average, Bollinger width, the day's range, and that session's sentiment. A move beyond ±0.5% counts as up or down.</li>
                     <li><strong>Grade.</strong> A SQL view joins every call to the following session's close and marks it right or wrong, using the same ±0.5% rule the model trained on.</li>
                 </ul>
@@ -105,7 +105,7 @@
             <figure class="diagram reveal" data-flow="pipeline">
                 <svg viewBox="0 0 940 350" role="img" aria-labelledby="d2title d2desc">
                     <title id="d2title">Market sentiment pipeline architecture</title>
-                    <desc id="d2desc">Yahoo Finance prices and headlines are pulled by a weekday Railway cron job, upserted into Supabase Postgres on natural keys, scored for sentiment by Gemini, and turned into a next-session call by a per-ticker Random Forest. A SQL view grades each call against the next close, and a Vercel dashboard reads the results through a cached, read-only endpoint.</desc>
+                    <desc id="d2desc">Yahoo Finance prices and headlines are pulled by a weekday Railway cron job, upserted into Supabase Postgres on natural keys, scored for sentiment by Claude, and turned into a next-session call by a per-ticker Random Forest. A SQL view grades each call against the next close, and a Vercel dashboard reads the results through a cached, read-only endpoint.</desc>
 
                     <!-- sources -->
                     <text class="d-t-group" x="8" y="40">Yahoo Finance</text>
@@ -132,7 +132,7 @@
                     <text class="d-t-accent" x="379" y="98"  text-anchor="middle">only changed rows</text>
 
                     <text class="d-t"    x="521" y="82"  text-anchor="middle">Score</text>
-                    <text class="d-t-sm" x="521" y="98"  text-anchor="middle">Gemini, cached</text>
+                    <text class="d-t-sm" x="521" y="98"  text-anchor="middle">Claude, cached</text>
 
                     <text class="d-t"    x="663" y="82"  text-anchor="middle">Predict</text>
                     <text class="d-t-sm" x="663" y="98"  text-anchor="middle">Random Forest</text>
@@ -274,7 +274,7 @@
                         <tr>
                             <td>An LLM for sentiment instead of a classical classifier</td>
                             <td>Financial headlines are full of negation and hedging. A bag-of-words model reads "beats lowered expectations" as good news.</td>
-                            <td>An external dependency in the middle of the run, and scores that aren't guaranteed to be reproducible. Scores are cached per ticker per session, so a rerun never calls the API again.</td>
+                            <td>An external dependency in the middle of the run, and scores that aren't guaranteed to be reproducible. Scores are cached per ticker per session, so a rerun never calls the API again. The dependency is real: the API key type this project started on stopped being accepted partway through, which is why the scorer sits behind one function with a second provider an environment variable away.</td>
                         </tr>
                         <tr>
                             <td>Random Forest over a neural model</td>
@@ -304,7 +304,7 @@
                         <li><strong>The sentiment feature is mostly zeros in training.</strong> There's no archive of historical news to backfill it from, so until months of live runs build up, the model is effectively technical-only. The backtest had no sentiment at all.</li>
                         <li>Yahoo Finance has no SLA, and <code>yfinance</code> can get rate-limited from cloud IPs. The job retries with backoff and records failures per ticker. There's no second data source.</li>
                         <li>There's no alerting. A failed run shows up on the dashboard and in Railway's logs, and nothing notifies me.</li>
-                        <li>The tests are an offline suite against a local Postgres that fakes Yahoo and Gemini and checks that a rerun writes 0 rows and that a price correction changes exactly one row per ticker. They run by hand, not in CI.</li>
+                        <li>The tests are an offline suite against a local Postgres that fakes Yahoo and the scoring API and checks that a rerun writes 0 rows and that a price correction changes exactly one row per ticker. They run by hand, not in CI.</li>
                     </ul>
                 </div>
 
@@ -327,7 +327,7 @@
                 <div>
                     <p class="label plain" style="margin-bottom:0.6rem;">Stack</p>
                     <ul class="stack">
-                        <li>Python</li><li>pandas</li><li>scikit-learn</li><li>Gemini API</li><li>PostgreSQL</li><li>Supabase</li><li>Railway</li><li>Vercel</li><li>Apache Airflow</li><li>Docker</li>
+                        <li>Python</li><li>pandas</li><li>scikit-learn</li><li>Claude API</li><li>PostgreSQL</li><li>Supabase</li><li>Railway</li><li>Vercel</li><li>Apache Airflow</li><li>Docker</li>
                     </ul>
                 </div>
                 <div style="display:flex; gap:0.7rem; flex-wrap:wrap;">

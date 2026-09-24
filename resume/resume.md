@@ -48,8 +48,8 @@ Live at app.kabirkenth.me | 2026 | Next.js, TypeScript, Supabase, Claude API, Pl
 - A Playwright worker on Railway fills and submits application forms, screenshotting each one for review before it submits. Vitest covers the security boundaries and the business rules.
 
 **Market Sentiment Pipeline: News Sentiment and Graded Signals**
-Live at market-sentiment-pipeline.vercel.app | 2026 | Python, PostgreSQL, Gemini, scikit-learn, Railway
-- A weekday Railway cron job pulls prices and headlines for five stocks and scores the news with Gemini.
+Live at market-sentiment-pipeline.vercel.app | 2026 | Python, PostgreSQL, Claude API, scikit-learn, Railway
+- A weekday Railway cron job pulls prices and headlines for five stocks and scores the news with the Claude API.
 - Postgres upserts on natural keys skip unchanged rows, so a rerun changes 0 rows. Version one appended and double-counted.
 - A Random Forest calls the next session, a SQL view grades each call against the next close, and a public dashboard shows the hit rate beside a naive baseline.
 
@@ -75,10 +75,16 @@ McMaster University | Hamilton, ON | Graduated Nov 2025 | Algorithms, Data Struc
 
 ## Changelog
 
+### Sep 24 2026: scoring moved to the Claude API
+
+Google stopped accepting the API key type the project started on, so the sentiment step now calls
+the Claude API (Haiku) by default, with Gemini still selectable through one environment variable.
+The stack line and the first project bullet follow the code.
+
 ### Sep 22 2026: market pipeline entry rewritten for the rebuilt version
 
 The pipeline was rebuilt and deployed, and the entry now describes exactly what that code does:
-five tickers, a Railway cron into Supabase Postgres with upserts that skip unchanged rows, Gemini
+five tickers, a Railway cron into Supabase Postgres with upserts that skip unchanged rows, LLM
 sentiment, a Random Forest call, and a SQL view plus a public dashboard that grade every call.
 The live URL is in the header line, the way ApplyTron's and FreightSwipe's are. The stack line
 names what runs now (Airflow, BigQuery, Docker and Looker Studio came off it; Airflow and BigQuery

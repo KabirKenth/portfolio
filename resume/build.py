@@ -184,8 +184,8 @@ story.append(b("A Playwright worker on Railway fills and submits application for
                "review before it submits. Vitest covers the security boundaries and the business rules."))
 
 story += role("Market Sentiment Pipeline: News Sentiment and Graded Signals",
-              "Live at market-sentiment-pipeline.vercel.app | 2026 | Python, PostgreSQL, Gemini, scikit-learn, Railway")
-story.append(b("A weekday Railway cron job pulls prices and headlines for five stocks and scores the news with Gemini."))
+              "Live at market-sentiment-pipeline.vercel.app | 2026 | Python, PostgreSQL, Claude API, scikit-learn, Railway")
+story.append(b("A weekday Railway cron job pulls prices and headlines for five stocks and scores the news with the Claude API."))
 story.append(b("Postgres upserts on natural keys skip unchanged rows, so a rerun changes 0 rows. Version one "
                "appended and double-counted."))
 story.append(b("A Random Forest calls the next session, a SQL view grades each call against the next close, and a "
