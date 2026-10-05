@@ -53,6 +53,15 @@
         return m;
     }
     function clearActive(m) { Object.keys(m).forEach(function (k) { m[k].classList.remove('n-active', 'n-done'); }); }
+    function activate(m, key) { Object.keys(m).forEach(function (k) { m[k].classList.toggle('n-active', k === key); }); }
+
+    // Run a flow once, the first time a third of it is on screen.
+    function playOnce(root, run) {
+        var io = new IntersectionObserver(function (es) {
+            if (es[0].isIntersecting) { io.disconnect(); run(); }
+        }, { threshold: 0.35 });
+        io.observe(root);
+    }
 
     /* ---------- 1. ApplyTron: the gate actually stops the flow ---------- */
 
@@ -87,14 +96,8 @@
         bReplay.addEventListener('click', function () { if (!running) run(); });
 
         function stage(key, label) {
-            clearActiveOnly(key);
-            n[key].classList.add('n-active');
+            activate(n, key);
             say(label, 'work');
-        }
-        function clearActiveOnly(key) {
-            Object.keys(n).forEach(function (k) {
-                if (k !== key) { n[k].classList.remove('n-active'); }
-            });
         }
 
         async function run() {
@@ -159,11 +162,7 @@
             gate(false);
             return;
         }
-        var seen = false;
-        var io = new IntersectionObserver(function (es) {
-            es.forEach(function (e) { if (e.isIntersecting && !seen) { seen = true; run(); } });
-        }, { threshold: 0.35 });
-        io.observe(root);
+        playOnce(root, run);
     }
 
     /* ---------- 2. Pipeline: data flowing into the warehouse ---------- */
@@ -198,8 +197,7 @@
                 var s = steps[i];
                 await travel(tok, prev, s.at, 620);
                 prev = s.at;
-                Object.keys(n).forEach(function (k) { n[k].classList.remove('n-active'); });
-                if (n[s.node]) n[s.node].classList.add('n-active');
+                activate(n, s.node);
                 status.textContent = s.text;
                 status.className = 'flow-status' + (s.node === 'load' ? ' is-hold' : ' is-work');
                 await wait(680);
@@ -212,10 +210,7 @@
 
         bReplay.addEventListener('click', function () { if (!running) run(); });
         if (reduce) { status.textContent = 'Daily run: extract → upsert → score → predict → dashboard.'; return; }
-        var seen = false;
-        new IntersectionObserver(function (es) {
-            es.forEach(function (e) { if (e.isIntersecting && !seen) { seen = true; run(); } });
-        }, { threshold: 0.35 }).observe(root);
+        playOnce(root, run);
     }
 
     /* ---------- 3. FreightSwipe: one row, two parties ---------- */
@@ -263,10 +258,7 @@
 
         bReplay.addEventListener('click', function () { if (!running) run(); });
         if (reduce) { status.textContent = 'Both parties read and write the same load record.'; return; }
-        var seen = false;
-        new IntersectionObserver(function (es) {
-            es.forEach(function (e) { if (e.isIntersecting && !seen) { seen = true; run(); } });
-        }, { threshold: 0.35 }).observe(root);
+        playOnce(root, run);
     }
 
     /* ---------- 4. Idempotency: MERGE vs INSERT, four seconds to grasp ---------- */
@@ -341,24 +333,22 @@
         if (!root) return;
 
         var MACHINE = {
-            ingested:  { label: 'ingested',   next: [['score', 'scored']] },
-            scored:    { label: 'scored',     next: [['generate documents', 'generated']] },
-            generated: { label: 'generated',  next: [['send for approval', 'pending_approval']] },
-            pending_approval: { label: 'pending_approval', gate: true,
-                                 next: [['edit documents', 'pending_approval'],
-                                        ['approve', 'approved'],
-                                        ['reject', 'rejected']] },
-            rejected:  { label: 'rejected', warn: true, terminal: true, next: [] },
+            ingested:  { next: [['score', 'scored']] },
+            scored:    { next: [['generate documents', 'generated']] },
+            generated: { next: [['send for approval', 'pending_approval']] },
+            pending_approval: { gate: true,
+                                next: [['edit documents', 'pending_approval'],
+                                       ['approve', 'approved'],
+                                       ['reject', 'rejected']] },
+            rejected:  { terminal: true, next: [] },
             // The worker claims a row with a conditional update from 'approved'.
             // A second worker reaching for the same row updates nothing.
-            approved:  { label: 'approved',   next: [['worker claims row', 'applying']] },
-            applying:  { label: 'applying',
-                         next: [['confirmation on page', 'applied'],
+            approved:  { next: [['worker claims row', 'applying']] },
+            applying:  { next: [['confirmation on page', 'applied'],
                                 ['no confirmation / untrusted host', 'manual_needed'],
                                 ['worker restarts — requeue', 'approved']] },
-            manual_needed: { label: 'manual_needed', warn: true,
-                             next: [['paste real apply URL', 'approved']] },
-            applied:   { label: 'applied', terminal: true, next: [] }
+            manual_needed: { next: [['paste real apply URL', 'approved']] },
+            applied:   { terminal: true, next: [] }
         };
         var ORDER = ['ingested', 'scored', 'generated', 'pending_approval', 'approved', 'applying', 'applied'];
 
@@ -378,8 +368,8 @@
                 var isNow = (k === state) || (k === anchor);
                 li.className = 'sm-node' + (isNow ? ' is-now' : '') +
                     (ORDER.indexOf(k) < ORDER.indexOf(anchor) ? ' is-past' : '') +
-                    (MACHINE[k] && MACHINE[k].gate ? ' is-gate' : '');
-                li.textContent = MACHINE[k].label;
+                    (MACHINE[k].gate ? ' is-gate' : '');
+                li.textContent = k;
                 track.appendChild(li);
             });
 
@@ -398,9 +388,8 @@
                 b.className = 'btn' + (pair[1] === 'approved' ? ' btn-solid' : '');
                 b.textContent = pair[0];
                 b.addEventListener('click', function () {
-                    var from = MACHINE[state].label;
+                    add(state + '  →  ' + pair[1]);
                     state = pair[1];
-                    add(from + '  →  ' + MACHINE[state].label);
                     draw();
                 });
                 acts.appendChild(b);
@@ -425,10 +414,9 @@
 
     function initLiveStatus() {
         var el = document.querySelector('[data-live-status]');
-        if (!el || !window.fetch) return;
-        var src = el.getAttribute('data-live-status') || 'pipeline-status.json';
+        if (!el) return;
 
-        fetch(src, { cache: 'no-store' })
+        fetch(el.getAttribute('data-live-status'), { cache: 'no-store' })
             .then(function (r) { if (!r.ok) throw 0; return r.json(); })
             .then(function (d) {
                 if (!d || !d.last_run_utc) throw 0;

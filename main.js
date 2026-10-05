@@ -14,8 +14,7 @@ function initReveal() {
     const targets = document.querySelectorAll('.reveal');
     if (!targets.length) return;
 
-    if (!('IntersectionObserver' in window) ||
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         targets.forEach(el => el.classList.add('on'));
         return;
     }

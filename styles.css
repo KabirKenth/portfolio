@@ -10,8 +10,6 @@
     --ink-050: #0d0d10;
     --ink-100: #131317;
     --ink-200: #1b1b21;
-    --ink-300: #26262e;
-    --ink-400: #3a3a45;
 
     /* text */
     --bone:    #eceae4;
@@ -245,7 +243,6 @@ p:last-child { margin-bottom: 0; }
     padding: 0.22rem 0.5rem; border-radius: 2px; border: 1px solid;
 }
 .status-live { color: var(--live); border-color: rgba(111,191,138,0.4); background: rgba(111,191,138,0.08); }
-.status-build { color: var(--amber); border-color: rgba(224,162,83,0.4); background: var(--amber-wash); }
 .status-arch { color: var(--slate); border-color: rgba(107,127,150,0.4); background: rgba(107,127,150,0.08); }
 .year { font-family: var(--mono); font-size: 0.72rem; color: var(--bone-mut); }
 
